@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#171512" />
+    <title>Área do Aluno · Leo Thaylor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500;600&display=swap" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" /></noscript>
+    <style>
+      :root {
+        --paper: #e2dfc8; --paper-2: #d9d6bd; --ink: #2a2818; --ink-2: #5c5944;
+        --sage: #8a9e7e; --teal: #0a8f6f; --teal-deep: #076a53; --teal-bright: #37cfa6;
+        --dark: #171512; --red: #c23b2e; --line: rgba(42, 40, 24, 0.16);
+        --display: "Fraunces", Georgia, serif;
+        --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+        --ease: cubic-bezier(.22, 1, .36, 1);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; min-height: 100svh; display: flex; align-items: center; justify-content: center;
+        padding: 24px; color: var(--ink); font-family: var(--sans); line-height: 1.55;
+        background:
+          radial-gradient(120% 90% at 15% 10%, rgba(138,158,126,.35), transparent 55%),
+          radial-gradient(120% 120% at 100% 100%, rgba(23,21,18,.14), transparent 55%),
+          var(--paper);
+      }
+      .login { width: 100%; max-width: 380px; }
+      .brand { display: flex; flex-direction: column; margin: 0 0 34px; }
+      .brand strong { font-family: var(--display); font-weight: 600; font-size: 1.2rem; letter-spacing: -.01em; }
+      .brand small {
+        margin-top: 3px; font-size: 0.66rem; font-weight: 600; letter-spacing: 0.2em;
+        text-transform: uppercase; color: var(--teal-deep);
+      }
+      .eyebrow {
+        margin: 0 0 .7rem; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em;
+        text-transform: uppercase; color: var(--ink-2);
+      }
+      h1 {
+        font-family: var(--display); font-weight: 600; color: var(--sage);
+        font-size: clamp(1.9rem, 6vw, 2.6rem); line-height: 1.05; letter-spacing: -.02em; margin: 0 0 28px;
+      }
+      label {
+        display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.14em;
+        text-transform: uppercase; color: var(--ink-2); margin: 0 0 7px;
+      }
+      .field { margin-bottom: 16px; }
+      input {
+        width: 100%; height: 52px; padding: 0 16px; border: 1px solid var(--line);
+        border-radius: 12px; background: rgba(255,255,255,.35); color: var(--ink);
+        font-family: inherit; font-size: 1rem; font-weight: 500; transition: border-color .2s, background .2s;
+      }
+      input:focus { outline: none; border-color: var(--teal); background: rgba(255,255,255,.6); }
+      button {
+        width: 100%; height: 54px; margin-top: 10px; border: 0; border-radius: 100px;
+        background: var(--teal); color: #fff; font-family: inherit; font-size: 1rem; font-weight: 600;
+        cursor: pointer; box-shadow: 0 8px 24px rgba(10,143,111,.28); transition: background .25s var(--ease), transform .25s var(--ease);
+      }
+      button:hover, button:focus-visible { background: var(--teal-deep); transform: translateY(-2px); }
+      .back-link {
+        display: inline-block; margin-top: 18px; color: var(--teal-deep); font-size: 0.92rem; font-weight: 600;
+        text-decoration: none; padding-bottom: 3px;
+        background-image: linear-gradient(currentColor, currentColor);
+        background-size: 0% 2px; background-position: 0 100%; background-repeat: no-repeat;
+        transition: background-size .3s var(--ease);
+      }
+      .back-link:hover, .back-link:focus-visible { background-size: 100% 2px; }
+      .error { margin: 14px 0 0; min-height: 1.2em; font-size: 0.9rem; font-weight: 600; color: var(--red); }
+      @media (prefers-reduced-motion: reduce) { button:hover { transform: none; } }
+    </style>
+  </head>
+  <body>
+    <main class="login">
+      <p class="brand"><strong>Leo Thaylor</strong><small>Brazilian Jiu-Jitsu · Trion</small></p>
+      <p class="eyebrow">Área do Aluno · Turma 10h</p>
+      <h1>Bem-vindo<br />de volta ao tatame.</h1>
+      <form id="loginForm" autocomplete="off">
+        <div class="field">
+          <label for="login">Login</label>
+          <input id="login" name="login" type="text" autocomplete="username" required />
+        </div>
+        <div class="field">
+          <label for="senha">Senha</label>
+          <input id="senha" name="senha" type="password" autocomplete="current-password" required />
+        </div>
+        <button type="submit">Entrar</button>
+        <p class="error" id="error" role="alert" aria-live="polite"></p>
+      </form>
+      <a class="back-link" href="../index.html">← Voltar ao site</a>
+    </main>
+
+    <script>
+      (function () {
+        "use strict";
+        var USER = "aluno";
+        var PASS = "alunodas10";
+
+        // Já autenticado → vai direto pro dashboard.
+        if (sessionStorage.getItem("bjj_auth") === "true") {
+          window.location.replace("dashboard.html");
+          return;
+        }
+
+        var form = document.getElementById("loginForm");
+        var error = document.getElementById("error");
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var login = document.getElementById("login").value.trim();
+          var senha = document.getElementById("senha").value;
+          if (login === USER && senha === PASS) {
+            sessionStorage.setItem("bjj_auth", "true");
+            window.location.href = "dashboard.html";
+          } else {
+            error.textContent = "Login ou senha incorretos";
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

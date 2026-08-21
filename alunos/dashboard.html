@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#E2DFC8" />
+  <title>Área do Aluno · Leo Thaylor</title>
+
+  <!-- Mantém a autenticação atual. Substitua somente alunos/dashboard.html. -->
+  <script>
+    if (sessionStorage.getItem("bjj_auth") !== "true") {
+      window.location.replace("index.html");
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500;600&display=swap" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" /></noscript>
+
+  <style>
+    :root {
+      --paper: #e2dfc8;
+      --paper-2: #edebdb;
+      --paper-3: #cbc7ae;
+      --ink: #3a3826;
+      --muted: #6a6750;
+      --teal: #0a8f6f;
+      --teal-deep: #076a53;
+      --teal-soft: rgba(10, 143, 111, 0.12);
+      --line: rgba(58, 56, 38, 0.16);
+      --line-strong: rgba(58, 56, 38, 0.27);
+      --shadow: 0 18px 45px rgba(58, 56, 38, 0.09);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-weight: 600;
+      line-height: 1.55;
+    }
+
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+
+    button:focus-visible, a:focus-visible, input:focus-visible {
+      outline: 3px solid rgba(10, 143, 111, 0.35);
+      outline-offset: 3px;
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(226, 223, 200, 0.93);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-inner {
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--teal);
+      color: #f3efe1;
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .brand-copy strong, .brand-copy span { display: block; }
+    .brand-copy strong { font-size: 0.96rem; font-weight: 900; line-height: 1.1; }
+    .brand-copy span {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .logout {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 9px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .logout:hover { background: var(--teal); border-color: var(--teal); color: #f3efe1; }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+
+    .back-link {
+      color: var(--ink);
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .back-link:hover { color: var(--teal-deep); }
+
+    main { padding: 42px 0 20px; }
+    section { padding: 24px 0 34px; }
+
+    .kicker {
+      margin: 0 0 4px;
+      color: var(--teal);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2 {
+      margin-bottom: 0;
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+    }
+    h1 { font-size: clamp(1.75rem, 4.5vw, 3rem); }
+    h2 { font-size: clamp(1.5rem, 3.5vw, 2.15rem); }
+
+    .section-description {
+      max-width: 620px;
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    /* Banner semanal */
+    .planner-shell {
+      margin-top: 20px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--paper-2);
+      box-shadow: var(--shadow);
+    }
+
+    .planner-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .planner-meta strong { font-size: 0.92rem; font-weight: 900; }
+    .planner-meta span { color: var(--muted); font-size: 0.78rem; font-weight: 800; }
+
+    .planner-image-wrap {
+      min-height: 230px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(10,143,111,.09), transparent 58%), var(--paper-3);
+    }
+
+    .planner-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 680px;
+      object-fit: contain;
+    }
+
+    .planner-fallback {
+      display: none;
+      max-width: 520px;
+      padding: 42px 24px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .planner-fallback strong {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--ink);
+      font-size: 1.05rem;
+      font-weight: 900;
+    }
+
+    /* Filtros */
+    .archive-tools {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 20px 0 18px;
+    }
+
+    .search-box { position: relative; }
+    .search-box::before {
+      content: "⌕";
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-52%);
+      color: var(--teal);
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+
+    .search-box input {
+      width: 100%;
+      min-height: 48px;
+      padding: 0 16px 0 43px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: var(--paper-2);
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .tag-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .filter-btn {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 13px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: #f3efe1;
+    }
+
+    .results-line {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    /* Cards */
+    .lesson-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .lesson-card {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--paper-2);
+      box-shadow: 0 12px 28px rgba(58,56,38,.045);
+      transition: 0.22s ease;
+    }
+
+    .lesson-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--line-strong);
+      box-shadow: var(--shadow);
+    }
+
+    .lesson-cover {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: linear-gradient(145deg, rgba(10,143,111,.24), rgba(58,56,38,.08)), var(--paper-3);
+    }
+
+    .lesson-cover img { width: 100%; height: 100%; object-fit: cover; }
+
+    .cover-placeholder {
+      width: 100%;
+      height: 100%;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+
+    .cover-placeholder span {
+      color: var(--teal-deep);
+      font-size: 0.66rem;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .cover-placeholder strong {
+      max-width: 94%;
+      margin-top: 6px;
+      font-size: 1.08rem;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .video-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: rgba(58,56,38,.78);
+      color: #f3efe1;
+      font-size: 0.63rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .video-badge.ready { background: var(--teal-deep); }
+
+    .lesson-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 18px;
+    }
+
+    .lesson-date {
+      margin-bottom: 7px;
+      color: var(--teal-deep);
+      font-size: 0.74rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .lesson-title { margin: 0; font-size: 1.02rem; font-weight: 900; line-height: 1.27; }
+    .lesson-summary { margin: 9px 0 0; color: var(--muted); font-size: 0.86rem; }
+
+    .lesson-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .lesson-tag {
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--teal-soft);
+      color: var(--teal-deep);
+      font-size: 0.66rem;
+      font-weight: 900;
+    }
+
+    .lesson-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 18px;
+    }
+
+    .watch-btn {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 999px;
+      background: var(--teal);
+      color: #f3efe1;
+      padding: 9px 17px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .watch-btn:hover { background: var(--teal-deep); }
+    .watch-btn[disabled] { background: rgba(58,56,38,.15); color: var(--muted); cursor: not-allowed; }
+    .lesson-level { color: var(--muted); font-size: 0.68rem; font-weight: 900; text-align: right; }
+
+    .empty-state {
+      display: none;
+      padding: 36px 22px;
+      border: 1px dashed var(--line-strong);
+      border-radius: 16px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    /* Modal */
+    .video-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(30,29,21,.78);
+      backdrop-filter: blur(7px);
+    }
+
+    .video-modal.open { display: flex; }
+    .modal-dialog {
+      width: min(960px, 100%);
+      overflow: hidden;
+      border-radius: 17px;
+      background: var(--paper-2);
+      box-shadow: 0 30px 80px rgba(0,0,0,.38);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal-title { margin: 0; font-size: 0.94rem; font-weight: 900; }
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--ink);
+      font-size: 1.15rem;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .modal-video { aspect-ratio: 16 / 9; background: #191913; }
+    .modal-video iframe { width: 100%; height: 100%; border: 0; }
+
+    footer {
+      padding: 38px 20px 48px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (min-width: 700px) {
+      .archive-tools { grid-template-columns: minmax(260px,.85fr) minmax(0,1.7fr); align-items: center; }
+      .lesson-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+
+    @media (min-width: 1040px) {
+      .lesson-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    }
+
+    @media (max-width: 620px) {
+      .wrap { width: min(100% - 26px, 1180px); }
+      .header-inner { min-height: 62px; }
+      .brand-copy span { display: none; }
+      main { padding-top: 28px; }
+      .planner-meta { align-items: flex-start; flex-direction: column; gap: 2px; }
+      .planner-image-wrap { min-height: 180px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+
+    /* ===================================================================
+       V2 SKIN — reaproveita o design system do site público (Fraunces +
+       Inter, sage nos títulos, teal vibrante). Só visual; a lógica/JS e
+       os nomes de classe permanecem intactos.
+       =================================================================== */
+    :root {
+      --display: "Fraunces", Georgia, "Times New Roman", serif;
+      --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --sage: #8a9e7e; --dark: #171512; --red: #c23b2e; --teal-bright: #37cfa6;
+      --ink: #2a2818; --muted: #5c5944;
+    }
+    body { font-family: var(--sans); font-weight: 400; }
+    .brand-mark { background: var(--teal); font-family: var(--sans); }
+    .brand-copy strong { font-family: var(--display); font-weight: 600; letter-spacing: -.01em; }
+    .kicker { color: var(--teal-deep); }
+    h1, h2 { font-family: var(--display); font-weight: 600; color: var(--sage); letter-spacing: -.02em; }
+    h1 { font-size: clamp(2rem, 5.2vw, 3.4rem); }
+    h2 { font-size: clamp(1.6rem, 3.8vw, 2.4rem); }
+    .section-description { color: var(--muted); }
+    .lesson-title { font-family: var(--display); font-weight: 600; font-size: 1.16rem; color: var(--ink); }
+    .cover-placeholder strong { font-family: var(--display); font-weight: 600; }
+    .modal-title { font-family: var(--display); font-weight: 600; }
+    .lesson-card { background: #e9e6d0; border-color: rgba(42,40,24,.12); }
+    .lesson-cover { background: linear-gradient(145deg, rgba(10,143,111,.22), rgba(138,158,126,.28)), var(--paper-3); }
+    /* link "Voltar ao site" vibrante com underline animado */
+    .back-link {
+      color: var(--teal-bright); font-weight: 600; padding-bottom: 3px;
+      background-image: linear-gradient(currentColor, currentColor);
+      background-size: 0% 2px; background-position: 0 100%; background-repeat: no-repeat;
+      transition: background-size .3s ease, color .3s ease;
+    }
+    .back-link:hover, .back-link:focus-visible { background-size: 100% 2px; color: var(--teal-deep); }
+    .watch-btn { box-shadow: 0 8px 20px rgba(10,143,111,.22); }
+    /* rodapé escuro, igual ao site público */
+    footer { background: var(--dark); color: rgba(240,234,210,.6); margin-top: 34px; }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">LT</div>
+        <div class="brand-copy">
+          <strong>Leo Thaylor · Área do Aluno</strong>
+          <span>Turma das 10h · TRION</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a class="back-link" href="../index.html">Voltar ao site</a>
+        <button class="logout" id="logout" type="button">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section aria-labelledby="planner-title">
+      <p class="kicker">Agenda</p>
+      <h1 id="planner-title">Cronograma da semana</h1>
+      <p class="section-description">
+        Confira os temas previstos. A programação pode receber ajustes conforme a evolução real da turma.
+      </p>
+
+      <div class="planner-shell">
+        <div class="planner-meta">
+          <strong id="plannerLabel">Aulas da semana</strong>
+          <span>Atualizado pelo professor</span>
+        </div>
+        <div class="planner-image-wrap">
+          <img class="planner-image" id="weeklyPlanner" alt="" />
+          <div class="planner-fallback" id="plannerFallback">
+            <strong>Cronograma em atualização</strong>
+            A nova imagem da semana será publicada aqui.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="archive-title">
+      <p class="kicker">Replay</p>
+      <h2 id="archive-title">Aulas anteriores</h2>
+      <p class="section-description">
+        Revise as posições pela data da aula e use as tags para encontrar um tema específico.
+      </p>
+
+      <div class="archive-tools">
+        <label class="search-box">
+          <span class="sr-only">Buscar aula</span>
+          <input id="lessonSearch" type="search" placeholder="Buscar posição, tema ou data" autocomplete="off" />
+        </label>
+        <div class="tag-filters" id="tagFilters" aria-label="Filtrar aulas por tema"></div>
+      </div>
+
+      <p class="results-line" id="resultsLine" aria-live="polite"></p>
+      <div class="lesson-grid" id="lessonGrid"></div>
+      <div class="empty-state" id="emptyState">Nenhuma aula encontrada com esse filtro.</div>
+    </section>
+  </main>
+
+  <footer>Leo Thaylor · Jiu-jitsu · Rio de Janeiro</footer>
+
+  <div class="video-modal" id="videoModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <p class="modal-title" id="modalTitle">Aula</p>
+        <button class="modal-close" id="modalClose" type="button" aria-label="Fechar vídeo">×</button>
+      </div>
+      <div class="modal-video" id="modalVideo"></div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* TROQUE SOMENTE O NOME DO BANNER A CADA SEMANA. */
+      const APP_CONFIG = {
+        weeklyPlannerImage: "../assets/images/cronograma-semana.webp",
+        weeklyPlannerAlt: "Cronograma semanal das aulas de jiu-jitsu da turma das 10h",
+        weeklyPlannerLabel: "Aulas da semana"
+      };
+
+      /* Cole o link do YouTube em videoUrl quando gravar cada aula. */
+      const LESSONS = [
+        {
+          id: "2026-07-24-cem-quilos-delariva",
+          dateISO: "2026-07-24",
+          dateLabel: "24/07/2026",
+          title: "Cem quilos — estrangulamento e abertura da De la Riva",
+          summary: "Revisão detalhada do estrangulamento no cem quilos e drill para quebrar a De la Riva e iniciar a passagem.",
+          tags: ["Cem quilos", "Finalização", "De la Riva", "Revisão"],
+          level: "Turma mista",
+          videoUrl: "",
+          thumbnail: ""
+        },
+        {
+          id: "2026-07-22-delariva-passagem",
+          dateISO: "2026-07-22",
+          dateLabel: "22/07/2026",
+          title: "De la Riva — abertura e passagem com Breno “Porrudo”",
+          summary: "Duas soluções ligadas à guarda De la Riva, seguidas de alto volume de drill e rolas controlados.",
+          tags: ["De la Riva", "Passagem", "Drill"],
+          level: "Turma mista",
+          videoUrl: "",
+          thumbnail: ""
+        },
+        {
+          id: "2026-07-17-zguard-meia-profunda",
+          dateISO: "2026-07-17",
+          dateLabel: "17/07/2026",
+          title: "Z-Guard — meia-guarda profunda, raspagens e costas",
+          summary: "Proteção com escudo, entrada na meia-guarda profunda, controle com duas lapelas e decisão entre raspagem ou costas.",
+          tags: ["Z-Guard", "Meia-guarda", "Raspagem", "Costas", "Revisão"],
+          level: "Turma mista",
+          videoUrl: "",
+          thumbnail: ""
+        },
+        {
+          id: "2026-07-06-guarda-fechada-armlock",
+          dateISO: "2026-07-06",
+          dateLabel: "06/07/2026",
+          title: "Guarda fechada — passagem colada e armlock",
+          summary: "Passagem com referência na faixa, armlock da guarda fechada e treino específico com objetivos diferentes para top e bottom.",
+          tags: ["Guarda fechada", "Passagem", "Armlock", "Condicionado"],
+          level: "Turma mista",
+          videoUrl: "",
+          thumbnail: ""
+        },
+        {
+          id: "2026-07-03-cem-quilos-knee-on-belly",
+          dateISO: "2026-07-03",
+          dateLabel: "03/07/2026",
+          title: "Cem quilos — estrangulamento, troca de lado e joelho na barriga",
+          summary: "Crossface, underhook, estrangulamento no side control, troca de lado e progressão para knee on belly.",
+          tags: ["Cem quilos", "Side control", "Finalização", "Knee on belly"],
+          level: "Iniciante",
+          videoUrl: "",
+          thumbnail: ""
+        },
+        {
+          id: "2026-07-01-guarda-fechada-quedas",
+          dateISO: "2026-07-01",
+          dateLabel: "01/07/2026",
+          title: "Guarda fechada — abertura e sequência de quedas",
+          summary: "Abertura usando alavanca, seguida de De-ashi-barai, Uchi-mata e variação de O-uchi-gari.",
+          tags: ["Guarda fechada", "Passagem", "Quedas", "Drill"],
+          level: "Turma mista",
+          videoUrl: "",
+          thumbnail: ""
+        },
+        {
+          id: "2026-06-23-29-leg-drag",
+          dateISO: "2026-06-29",
+          dateLabel: "Semana 23–29/06/2026",
+          title: "Guarda-aranha — leg drag e estabilização no cem quilos",
+          summary: "Retirada de pegada, deslocamento lateral, leg drag, estabilização e integração com alunos de outros horários.",
+          tags: ["Guarda-aranha", "Leg drag", "Passagem", "Cem quilos"],
+          level: "Registro consolidado",
+          videoUrl: "",
+          thumbnail: ""
+        }
+      ];
+
+      const state = { activeTag: "Todas", search: "" };
+      const planner = document.getElementById("weeklyPlanner");
+      const plannerFallback = document.getElementById("plannerFallback");
+      const plannerLabel = document.getElementById("plannerLabel");
+      const tagFilters = document.getElementById("tagFilters");
+      const lessonGrid = document.getElementById("lessonGrid");
+      const lessonSearch = document.getElementById("lessonSearch");
+      const resultsLine = document.getElementById("resultsLine");
+      const emptyState = document.getElementById("emptyState");
+      const videoModal = document.getElementById("videoModal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalVideo = document.getElementById("modalVideo");
+      const modalClose = document.getElementById("modalClose");
+
+      function normalizeText(value) {
+        return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+      }
+
+      function escapeHTML(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function getYouTubeEmbedUrl(url) {
+        if (!url) return "";
+        try {
+          const parsed = new URL(url);
+          let id = "";
+          if (parsed.hostname.includes("youtu.be")) id = parsed.pathname.split("/").filter(Boolean)[0] || "";
+          if (parsed.hostname.includes("youtube.com")) {
+            if (parsed.pathname === "/watch") id = parsed.searchParams.get("v") || "";
+            if (parsed.pathname.startsWith("/embed/")) id = parsed.pathname.split("/")[2] || "";
+            if (parsed.pathname.startsWith("/shorts/")) id = parsed.pathname.split("/")[2] || "";
+          }
+          return id ? "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0" : "";
+        } catch (error) {
+          return "";
+        }
+      }
+
+      function configurePlanner() {
+        plannerLabel.textContent = APP_CONFIG.weeklyPlannerLabel;
+        planner.alt = APP_CONFIG.weeklyPlannerAlt;
+        planner.src = APP_CONFIG.weeklyPlannerImage;
+        planner.addEventListener("load", function () {
+          planner.style.display = "block";
+          plannerFallback.style.display = "none";
+        });
+        planner.addEventListener("error", function () {
+          planner.style.display = "none";
+          plannerFallback.style.display = "block";
+        });
+      }
+
+      function getAllTags() {
+        const tags = new Set();
+        LESSONS.forEach(function (lesson) {
+          lesson.tags.forEach(function (tag) { tags.add(tag); });
+        });
+        return ["Todas"].concat(Array.from(tags).sort(function (a, b) { return a.localeCompare(b, "pt-BR"); }));
+      }
+
+      function renderTagFilters() {
+        tagFilters.innerHTML = getAllTags().map(function (tag) {
+          const active = state.activeTag === tag ? " active" : "";
+          return '<button class="filter-btn' + active + '" type="button" data-tag="' + escapeHTML(tag) + '">' + escapeHTML(tag) + '</button>';
+        }).join("");
+
+        tagFilters.querySelectorAll("[data-tag]").forEach(function (button) {
+          button.addEventListener("click", function () {
+            state.activeTag = button.dataset.tag;
+            renderTagFilters();
+            renderLessons();
+          });
+        });
+      }
+
+      function getFilteredLessons() {
+        const term = normalizeText(state.search);
+        return LESSONS.slice()
+          .sort(function (a, b) { return b.dateISO.localeCompare(a.dateISO); })
+          .filter(function (lesson) {
+            const matchesTag = state.activeTag === "Todas" || lesson.tags.includes(state.activeTag);
+            const searchable = normalizeText([
+              lesson.title,
+              lesson.summary,
+              lesson.dateLabel,
+              lesson.level,
+              lesson.tags.join(" ")
+            ].join(" "));
+            return matchesTag && (!term || searchable.includes(term));
+          });
+      }
+
+      function lessonCard(lesson) {
+        const hasVideo = Boolean(lesson.videoUrl);
+        const tags = lesson.tags.map(function (tag) {
+          return '<span class="lesson-tag">' + escapeHTML(tag) + '</span>';
+        }).join("");
+
+        const cover = lesson.thumbnail
+          ? '<img src="' + escapeHTML(lesson.thumbnail) + '" alt="Capa da aula ' + escapeHTML(lesson.title) + '" loading="lazy">'
+          : '<div class="cover-placeholder"><span>Aula registrada</span><strong>' + escapeHTML(lesson.title) + '</strong></div>';
+
+        const action = hasVideo
+          ? '<button class="watch-btn" type="button" data-video="' + escapeHTML(lesson.videoUrl) + '" data-title="' + escapeHTML(lesson.title) + '">Assistir</button>'
+          : '<button class="watch-btn" type="button" disabled>Vídeo em breve</button>';
+
+        return '<article class="lesson-card">' +
+          '<div class="lesson-cover">' + cover +
+            '<span class="video-badge' + (hasVideo ? ' ready' : '') + '">' + (hasVideo ? 'Disponível' : 'A gravar') + '</span>' +
+          '</div>' +
+          '<div class="lesson-body">' +
+            '<div class="lesson-date">' + escapeHTML(lesson.dateLabel) + '</div>' +
+            '<h3 class="lesson-title">' + escapeHTML(lesson.title) + '</h3>' +
+            '<p class="lesson-summary">' + escapeHTML(lesson.summary) + '</p>' +
+            '<div class="lesson-tags">' + tags + '</div>' +
+            '<div class="lesson-actions">' + action + '<span class="lesson-level">' + escapeHTML(lesson.level) + '</span></div>' +
+          '</div>' +
+        '</article>';
+      }
+
+      function renderLessons() {
+        const lessons = getFilteredLessons();
+        lessonGrid.innerHTML = lessons.map(lessonCard).join("");
+        emptyState.style.display = lessons.length ? "none" : "block";
+        resultsLine.textContent = lessons.length === 1 ? "1 aula encontrada" : lessons.length + " aulas encontradas";
+
+        lessonGrid.querySelectorAll("[data-video]").forEach(function (button) {
+          button.addEventListener("click", function () {
+            openVideo(button.dataset.video, button.dataset.title);
+          });
+        });
+      }
+
+      function openVideo(url, title) {
+        const embedUrl = getYouTubeEmbedUrl(url);
+        if (!embedUrl) {
+          window.open(url, "_blank", "noopener,noreferrer");
+          return;
+        }
+        modalTitle.textContent = title;
+        modalVideo.innerHTML = '<iframe src="' + embedUrl + '" title="' + escapeHTML(title) + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+        videoModal.classList.add("open");
+        document.body.style.overflow = "hidden";
+        modalClose.focus();
+      }
+
+      function closeVideo() {
+        videoModal.classList.remove("open");
+        modalVideo.innerHTML = "";
+        document.body.style.overflow = "";
+      }
+
+      lessonSearch.addEventListener("input", function () {
+        state.search = lessonSearch.value;
+        renderLessons();
+      });
+
+      modalClose.addEventListener("click", closeVideo);
+      videoModal.addEventListener("click", function (event) {
+        if (event.target === videoModal) closeVideo();
+      });
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && videoModal.classList.contains("open")) closeVideo();
+      });
+
+      document.getElementById("logout").addEventListener("click", function () {
+        sessionStorage.clear();
+        window.location.href = "index.html";
+      });
+
+      configurePlanner();
+      renderTagFilters();
+      renderLessons();
+    })();
+  </script>
+</body>
+</html>

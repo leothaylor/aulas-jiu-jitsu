@@ -1,0 +1,7 @@
+# pasta de referência da produção antiga — não versionar
+_legacy-producao/
+# artefatos de preview/screenshot
+_*.png
+_*.jpg
+_preview*
+*.bak
