@@ -137,22 +137,22 @@
       const easeInOut = (t) =>
         t <= 0 ? 0 : t >= 1 ? 1 : (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-      /* estado inicial por card: espiral (raio + ângulo) vinda de cima-direita */
+      /* estado inicial por card: espiral (raio + ângulo) — cards ficam EM PÉ */
       const starts = tiles.map((el, i) => {
         const s = n > 1 ? i / (n - 1) : 0;
         return {
-          A0: -0.25 * PI - s * 0.18 * PI,      /* ângulo inicial (cima-direita), espalhado */
-          sweep: -(1.55 * PI + 0.5 * PI * s),  /* varredura ~1 volta (horário) => espiral */
-          Rf: 0.72 + 0.22 * (1 - s),           /* raio inicial (fração de H) */
-          spin: -230 - 140 * s,                /* giro do próprio card (graus) */
-          ry: 44,                              /* inclinação 3D inicial (graus) */
-          tz: -840,                            /* profundidade inicial (px) */
-          sc: 0.46                             /* escala inicial */
+          A0: -0.28 * PI - s * 0.16 * PI,      /* ângulo inicial (cima-direita), espalhado */
+          sweep: -(1.15 * PI + 0.35 * PI * s), /* varredura ~200-270° => espiral visível */
+          Rf: 0.34 + 0.16 * (1 - s),           /* raio inicial menor (fração de H) => espiral na tela */
+          spin: -30 - 22 * s,                  /* giro suave do card (nunca de cabeça pra baixo) */
+          ry: 34,                              /* inclinação 3D inicial (graus) */
+          tz: -520,                            /* profundidade inicial (px) */
+          sc: 0.58                             /* escala inicial */
         };
       });
 
-      /* mais lento: janela maior por card + mais escalonamento */
-      const STAGGER = 0.052, DUR = 0.52;
+      /* último card assenta exatamente em p=1:  (n-1)*STAGGER + DUR = 1 */
+      const STAGGER = 0.04, DUR = 1 - (n - 1) * 0.04;
 
       function apply(p) {
         const h = H();
@@ -179,7 +179,7 @@
       /* alcance de scroll bem maior => entrada mais lenta e visível */
       function progress() {
         const r = mgrid.getBoundingClientRect();
-        const start = 1.05 * H(), end = -0.45 * H();
+        const start = 1.15 * H(), end = -0.85 * H();
         return Math.min(1, Math.max(0, (start - r.top) / (start - end)));
       }
 
