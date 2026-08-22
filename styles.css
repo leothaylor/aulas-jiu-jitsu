@@ -191,7 +191,7 @@ em{font-style:italic; color:var(--teal-deep)}
 .gallery__track{display:flex; gap:1rem; padding:0 var(--pad); width:max-content}
 .gallery figure{position:relative; margin:0; flex:0 0 auto; width:clamp(210px,26vw,320px); border-radius:var(--r); overflow:hidden; scroll-snap-align:center}
 .gallery figure img{width:100%; aspect-ratio:4/5; object-fit:cover; transition:transform .6s var(--ease)}
-.gallery figure:hover img{transform:scale(1.04)}
+.gallery figure:hover img{transform:scale(1.06)}
 .gallery figure span{position:absolute; left:12px; top:10px; font-family:var(--display); font-weight:600; color:#fff; font-size:1rem; text-shadow:0 1px 8px rgba(0,0,0,.5)}
 
 /* Cena 6 — local */
@@ -305,4 +305,35 @@ em{font-style:italic; color:var(--teal-deep)}
   [data-reveal],[data-reveal-line]{opacity:1 !important; transform:none !important; transition:none}
   .marquee__track{animation:none}
   .hero__scroll span::after{animation:none}
+}
+
+/* ============================================================
+   Cursor customizado (desktop, ponteiro fino) + etiqueta "Ampliar"
+   ============================================================ */
+.cursor{
+  position:fixed; top:0; left:0; z-index:9999; pointer-events:none;
+  width:12px; height:12px; border-radius:999px; background:var(--teal-deep);
+  display:flex; align-items:center; justify-content:center; overflow:hidden;
+  white-space:nowrap; font-family:var(--sans); font-weight:800; font-size:0;
+  letter-spacing:.14em; text-transform:uppercase; color:#fff;
+  transition:width .28s var(--ease), height .28s var(--ease),
+             background-color .28s var(--ease), border-radius .28s var(--ease),
+             padding .28s var(--ease), opacity .25s var(--ease);
+  will-change:transform;
+}
+.cursor.is-pointer{
+  width:42px; height:42px; background:rgba(10,143,111,.16);
+  border:1.5px solid var(--teal);
+}
+.cursor.is-ampliar{
+  width:auto; height:auto; padding:.72em 1.15em; border-radius:999px;
+  background:var(--dark); color:#fff; font-size:.66rem;
+}
+.cursor.is-hidden{opacity:0}
+/* esconde o cursor nativo só quando o custom está ativo */
+body.has-cursor, body.has-cursor *{cursor:none !important}
+
+@media (prefers-reduced-motion:reduce){
+  .cursor{display:none}
+  body.has-cursor, body.has-cursor *{cursor:auto !important}
 }

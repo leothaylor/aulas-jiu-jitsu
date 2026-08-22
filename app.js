@@ -122,4 +122,43 @@
     });
   }
 
+  /* ---------- Cursor customizado + etiqueta "Ampliar" ---------- */
+  const finePointer = window.matchMedia("(pointer: fine)").matches;
+  if (finePointer && !reduce) {
+    const cur = document.createElement("div");
+    cur.className = "cursor is-hidden";
+    cur.setAttribute("aria-hidden", "true");
+    document.body.appendChild(cur);
+    document.body.classList.add("has-cursor");
+
+    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    let cx = mx, cy = my, seen = false;
+
+    const AMPLIAR = ".gallery figure, .card__media";
+    const POINTER = "a, button, [role='button'], .btn, .filter-btn, .nav__burger, summary, label";
+
+    window.addEventListener("mousemove", (e) => {
+      mx = e.clientX; my = e.clientY;
+      if (!seen) { seen = true; cur.classList.remove("is-hidden"); }
+      const t = e.target;
+      if (t.closest && t.closest(AMPLIAR)) {
+        cur.className = "cursor is-ampliar"; cur.textContent = "Ampliar";
+      } else if (t.closest && t.closest(POINTER)) {
+        cur.className = "cursor is-pointer"; cur.textContent = "";
+      } else {
+        cur.className = "cursor"; cur.textContent = "";
+      }
+    }, { passive: true });
+
+    document.addEventListener("mouseleave", () => cur.classList.add("is-hidden"));
+    document.addEventListener("mouseenter", () => cur.classList.remove("is-hidden"));
+
+    const loop = () => {
+      cx += (mx - cx) * 0.2; cy += (my - cy) * 0.2;
+      cur.style.transform = "translate3d(" + cx + "px," + cy + "px,0) translate(-50%,-50%)";
+      requestAnimationFrame(loop);
+    };
+    loop();
+  }
+
 })();
