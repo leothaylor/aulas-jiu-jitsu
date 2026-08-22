@@ -99,7 +99,7 @@
   const lb = $("[data-lightbox]");
   if (lb) {
     const lbImg = $("[data-lb-img]", lb);
-    const items = $$(".gallery figure img, .card__media img");
+    const items = $$(".mtile img, .card__media img");
     let idx = 0;
     const show = (i) => {
       idx = (i + items.length) % items.length;
@@ -122,6 +122,71 @@
     });
   }
 
+  /* ---------- Momentos: grade que se monta em 3D ao rolar ---------- */
+  const mgrid = $("[data-mgrid]");
+  if (mgrid) {
+    const tiles = $$(".mtile", mgrid);
+    const n = tiles.length;
+    if (!reduce && n) {
+      mgrid.classList.add("js-mgrid");
+      const easeOut = (t) => (t <= 0 ? 0 : t >= 1 ? 1 : 1 - Math.pow(1 - t, 3));
+      const W = () => window.innerWidth;
+      const H = () => window.innerHeight;
+
+      /* estado inicial por card: vindo de cima-direita, em curva/leque */
+      const starts = tiles.map((el, i) => {
+        const s = n > 1 ? i / (n - 1) : 0;
+        return {
+          dx: 0.55 + 0.65 * (1 - s),  /* fração de W (direita) */
+          dy: -0.55 - 0.35 * s,       /* fração de H (acima) */
+          rz: -16 + 26 * s,           /* graus */
+          ry: 32,                     /* graus (inclinação 3D) */
+          tz: -700,                   /* px de profundidade */
+          sc: 0.55
+        };
+      });
+
+      const STAGGER = 0.045, DUR = 0.5;
+
+      function apply(p) {
+        const w = W(), h = H();
+        for (let i = 0; i < n; i++) {
+          const st = starts[i];
+          const lp = easeOut((p - i * STAGGER) / DUR);
+          const inv = 1 - lp;
+          const tx = st.dx * w * inv;
+          const ty = st.dy * h * inv;
+          const tz = st.tz * inv;
+          const ry = st.ry * inv;
+          const rz = st.rz * inv;
+          const sc = st.sc + (1 - st.sc) * lp;
+          tiles[i].style.transform =
+            "translate3d(" + tx.toFixed(1) + "px," + ty.toFixed(1) + "px," + tz.toFixed(0) + "px)" +
+            " rotateY(" + ry.toFixed(1) + "deg) rotateZ(" + rz.toFixed(1) + "deg) scale(" + sc.toFixed(3) + ")";
+          tiles[i].style.opacity = Math.min(1, lp * 1.6).toFixed(3);
+        }
+      }
+
+      function progress() {
+        const r = mgrid.getBoundingClientRect();
+        const start = 0.9 * H(), end = 0.3 * H();
+        return Math.min(1, Math.max(0, (start - r.top) / (start - end)));
+      }
+
+      let ticking = false;
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => { apply(progress()); ticking = false; });
+      }
+
+      apply(0);
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+      onScroll();
+    }
+  }
+
   /* ---------- Cursor customizado + etiqueta "Ampliar" ---------- */
   const finePointer = window.matchMedia("(pointer: fine)").matches;
   if (finePointer && !reduce) {
@@ -133,7 +198,7 @@
 
     let seen = false;
 
-    const AMPLIAR = ".gallery figure, .card__media";
+    const AMPLIAR = ".mtile, .card__media";
     const POINTER = "a, button, [role='button'], .btn, .filter-btn, .nav__burger, summary, label";
 
     window.addEventListener("mousemove", (e) => {

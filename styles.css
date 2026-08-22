@@ -194,6 +194,25 @@ em{font-style:italic; color:var(--teal-deep)}
 .gallery figure:hover img{transform:scale(1.06)}
 .gallery figure span{position:absolute; left:12px; top:10px; font-family:var(--display); font-weight:600; color:#fff; font-size:1rem; text-shadow:0 1px 8px rgba(0,0,0,.5)}
 
+/* ---------- Momentos: grade que se monta em 3D ao rolar ---------- */
+.mgrid{
+  max-width:var(--maxw); margin:0 auto; padding:0 var(--pad);
+  display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(.7rem,1.6vw,1.3rem);
+  perspective:1300px;
+}
+.mtile{
+  position:relative; margin:0; border-radius:var(--r); overflow:hidden;
+  aspect-ratio:4/5; transform-style:preserve-3d; backface-visibility:hidden;
+  box-shadow:0 18px 42px rgba(23,21,18,.16);
+}
+.mtile img{width:100%; height:100%; object-fit:cover; display:block; cursor:zoom-in; transition:transform .6s var(--ease)}
+.mtile:hover img{transform:scale(1.06)}
+.mtile span{position:absolute; left:12px; top:10px; font-family:var(--display); font-weight:600; color:#fff; font-size:1rem; text-shadow:0 1px 8px rgba(0,0,0,.5)}
+/* enquanto o JS controla a montagem, começa invisível (evita flash já montado) */
+.mgrid.js-mgrid .mtile{opacity:0; will-change:transform,opacity}
+@media (max-width:820px){ .mgrid{grid-template-columns:repeat(2,1fr)} }
+@media (prefers-reduced-motion:reduce){ .mgrid.js-mgrid .mtile{opacity:1; transform:none !important} }
+
 /* Cena 6 — local */
 .scene--place{display:grid; grid-template-columns:1fr 1fr; gap:clamp(2rem,5vw,4rem); align-items:center}
 .place__addr{font-style:normal; color:var(--ink-2); margin:1.4rem 0 1.8rem; line-height:1.8}
