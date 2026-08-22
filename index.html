@@ -21,8 +21,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500;600&display=swap" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500;600&display=swap" /></noscript>
+    <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" /></noscript>
 
     <!-- LCP: pré-carrega a foto do hero na versão certa -->
     <link rel="preload" as="image" href="./assets/images/hero-leo-bjj-900.webp" imagesrcset="./assets/images/hero-leo-bjj-600.webp 600w, ./assets/images/hero-leo-bjj-900.webp 900w, ./assets/images/hero-leo-bjj-1600.webp 1600w" imagesizes="100vw" fetchpriority="high" />
@@ -44,6 +44,7 @@
         <a href="#primeira-aula">Primeira aula</a>
         <a href="#momentos">Momentos</a>
         <a href="#localizacao">Onde treinar</a>
+        <a href="./alunos/">Área do Aluno</a>
       </nav>
       <a class="btn btn--wa nav__cta" href="https://wa.me/5521982808635?text=Ol%C3%A1%2C%20Leo.%20Vim%20pelo%20seu%20site%20e%20gostaria%20de%20agendar%20uma%20aula%20experimental%20de%20jiu-jitsu%20na%20Trion." target="_blank" rel="noopener noreferrer">Agendar aula</a>
       <button class="nav__burger" aria-label="Abrir menu" aria-expanded="false" data-burger>
@@ -97,7 +98,7 @@
       <!-- ============ CENA 2 — TRAJETÓRIA ============ -->
       <section id="trajetoria" class="scene scene--split" data-scene>
         <div class="scene__text">
-          <p class="marker" data-reveal>01 — Trajetória</p>
+          <p class="marker" data-reveal>Trajetória</p>
           <h2 class="h-display" data-reveal>Comecei aos 16.<br />Ainda treino<br /><em>todos os dias.</em></h2>
           <p data-reveal>Sou Leo Thaylor, faixa preta de jiu-jitsu e professor contratado pela Trion, no Rio de Janeiro. Treinei a maior parte da vida na academia Marcio Rodrigues antes de chegar aqui.</p>
           <p data-reveal>Já dei aula para crianças e adultos, em academia e em colégio. Para quem está começando, a primeira aula tem uma introdução específica antes da prática, sem exigir experiência anterior.</p>
@@ -111,7 +112,7 @@
       <!-- ============ CENA 3 — COMO ENSINO ============ -->
       <section id="metodo" class="scene scene--method" data-scene>
         <header class="scene__head">
-          <p class="marker" data-reveal>02 — Como ensino</p>
+          <p class="marker" data-reveal>Como ensino</p>
           <h2 class="h-display" data-reveal>Entender primeiro.<br /><em>Executar depois.</em></h2>
           <p class="scene__lead" data-reveal>A aula não parte do princípio de que você já sabe lutar. Cada técnica é apresentada por etapas: você entende a posição e o objetivo, pratica o movimento e recebe correções durante o exercício.</p>
         </header>
@@ -132,7 +133,7 @@
       <!-- ============ CENA 4 — PRIMEIRA AULA ============ -->
       <section id="primeira-aula" class="scene scene--first" data-scene>
         <header class="scene__head">
-          <p class="marker" data-reveal>03 — Primeira aula</p>
+          <p class="marker" data-reveal>Primeira aula</p>
           <h2 class="h-display" data-reveal>O primeiro treino<br /><em>é para aprender.</em></h2>
           <p class="scene__lead" data-reveal>A aula experimental apresenta o jiu-jitsu, o ambiente e a forma de ensino antes de você decidir continuar.</p>
         </header>
@@ -162,7 +163,7 @@
       <section id="momentos" class="scene scene--moments" data-scene>
         <header class="scene__head scene__head--row">
           <div>
-            <p class="marker" data-reveal>04 — Momentos</p>
+            <p class="marker" data-reveal>Momentos</p>
             <h2 class="h-display" data-reveal>Tatame, aula,<br /><em>rotina.</em></h2>
           </div>
           <p class="scene__lead" data-reveal>Registros reais das aulas e do dia a dia na Trion. Arraste ou role para percorrer&nbsp;→</p>
@@ -211,7 +212,7 @@
 
     <!-- ============ RODAPÉ / CONTATO ============ -->
     <footer id="contato" class="foot" data-scene>
-      <p class="marker marker--light" data-reveal>05 — Contato</p>
+      <p class="marker marker--light" data-reveal>Contato</p>
       <h2 class="foot__title" data-reveal>Fala comigo.</h2>
       <p class="foot__lead" data-reveal>O WhatsApp é o caminho para conversar agora. O formulário serve para deixar seus dados e receber contato. No Instagram, você acompanha aulas e rotina.</p>
 
@@ -226,11 +227,13 @@
         <li><a href="./alunos/">Já é aluno? Área do Aluno →</a></li>
       </ul>
 
-      <div class="foot__base">
-        <span>Leo Thaylor · Jiu-jitsu · Trion, Rio de Janeiro</span>
-        <a href="#inicio">Voltar ao topo ↑</a>
-      </div>
     </footer>
+
+    <!-- ============ FAIXA PRETA (tarja final, como no site oficial) ============ -->
+    <div class="belt">
+      <div class="belt__main"><span>Aulas de jiu-jitsu · Rio de Janeiro</span></div>
+      <div class="belt__accent"><a href="#inicio">Leo Thaylor</a></div>
+    </div>
 
     <!-- CTA fixo (mobile) -->
     <a class="wa-fab" href="https://wa.me/5521982808635?text=Ol%C3%A1%2C%20Leo.%20Vim%20pelo%20seu%20site%20e%20gostaria%20de%20agendar%20uma%20aula%20experimental%20de%20jiu-jitsu%20na%20Trion." target="_blank" rel="noopener noreferrer" aria-label="Agendar pelo WhatsApp">

@@ -11,8 +11,8 @@
   --dark:#171512; --red:#c23b2e; --red-ink:#f9e4e0;
   --line:rgba(42,40,24,.16); --line-soft:rgba(42,40,24,.09);
 
-  --display:"Fraunces",Georgia,"Times New Roman",serif;
-  --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --display:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --sans:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
 
   --pad:clamp(20px,5vw,110px);
   --maxw:1280px;
@@ -74,10 +74,13 @@ em{font-style:italic; color:var(--teal-deep)}
   position:fixed; inset:0 0 auto 0; z-index:100;
   display:flex; align-items:center; gap:1.5rem;
   padding:.85rem var(--pad);
-  transition:background .4s var(--ease), backdrop-filter .4s var(--ease), border-color .4s var(--ease);
+  transition:background .4s var(--ease), backdrop-filter .4s var(--ease), border-color .4s var(--ease), transform .4s var(--ease), opacity .4s var(--ease);
   border-bottom:1px solid transparent;
+  /* escondida no topo (sobre o hero): só aparece ao rolar */
+  transform:translateY(-100%); opacity:0; pointer-events:none;
 }
 .nav.is-stuck{
+  transform:none; opacity:1; pointer-events:auto;
   background:rgba(226,223,200,.82); backdrop-filter:blur(12px);
   border-bottom-color:var(--line-soft);
 }
@@ -136,7 +139,7 @@ em{font-style:italic; color:var(--teal-deep)}
 .marquee{background:var(--dark); color:var(--paper); overflow:hidden; padding:.9rem 0; border-block:1px solid rgba(255,255,255,.06)}
 .marquee__track{display:inline-flex; gap:1.4rem; white-space:nowrap; will-change:transform; animation:marq 26s linear infinite}
 .marquee__track span{font-family:var(--display); font-weight:500; font-size:1.15rem; letter-spacing:.02em}
-.marquee__track i{color:var(--red); font-style:normal}
+.marquee__track i{color:var(--teal-bright); font-style:normal}
 @keyframes marq{to{transform:translateX(-33.33%)}}
 
 /* ============================================================
@@ -214,7 +217,11 @@ em{font-style:italic; color:var(--teal-deep)}
   display:inline-block;
 }
 .foot__links a:hover,.foot__links a:focus-visible{background-size:100% 2px; color:#fff; transform:translateY(-2px)}
-.foot__base{display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-top:3.5rem; padding-top:1.6rem; border-top:1px solid rgba(255,255,255,.1); font-size:.82rem; color:rgba(240,234,210,.5)}
+
+/* Faixa preta (tarja final) — replicada do site oficial */
+.belt{display:flex; background:var(--dark); font-family:var(--sans); font-weight:800; font-size:.9rem}
+.belt__main{flex:1; display:flex; align-items:center; padding:clamp(30px,4vw,46px) var(--pad); color:rgba(226,223,200,.82)}
+.belt__accent{width:22%; min-width:150px; display:flex; align-items:center; justify-content:center; padding:clamp(30px,4vw,46px) 18px; background:var(--red); color:var(--red-ink); text-align:center}
 
 /* CTA flutuante (mobile) */
 .wa-fab{position:fixed; right:16px; bottom:16px; z-index:90; width:56px; height:56px; border-radius:50%; background:var(--teal); color:#fff; display:none; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(10,143,111,.4)}
@@ -277,9 +284,10 @@ em{font-style:italic; color:var(--teal-deep)}
 }
 @media (max-width:720px){
   .nav__links{
-    position:fixed; inset:0 0 0 auto; width:min(78vw,320px);
+    position:fixed; top:0; right:0; bottom:auto; left:auto;
+    height:100dvh; width:min(78vw,320px); z-index:100;
     flex-direction:column; justify-content:center; gap:1.8rem;
-    background:rgba(23,21,18,.96); backdrop-filter:blur(10px);
+    background:#171512;
     padding:var(--pad); transform:translateX(100%); transition:transform .4s var(--ease); font-size:1.2rem;
   }
   .nav__links.is-open{transform:none}

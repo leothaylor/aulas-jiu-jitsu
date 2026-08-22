@@ -16,8 +16,8 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500;600&display=swap" />
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" /></noscript>
+  <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" /></noscript>
 
   <style>
     :root {
@@ -505,13 +505,13 @@
     }
 
     /* ===================================================================
-       V2 SKIN — reaproveita o design system do site público (Fraunces +
-       Inter, sage nos títulos, teal vibrante). Só visual; a lógica/JS e
+       V2 SKIN — reaproveita o design system do site público (Nunito,
+       sage nos títulos, teal vibrante). Só visual; a lógica/JS e
        os nomes de classe permanecem intactos.
        =================================================================== */
     :root {
-      --display: "Fraunces", Georgia, "Times New Roman", serif;
-      --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --display: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --sans: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
       --sage: #8a9e7e; --dark: #171512; --red: #c23b2e; --teal-bright: #37cfa6;
       --ink: #2a2818; --muted: #5c5944;
     }
@@ -537,8 +537,46 @@
     }
     .back-link:hover, .back-link:focus-visible { background-size: 100% 2px; color: var(--teal-deep); }
     .watch-btn { box-shadow: 0 8px 20px rgba(10,143,111,.22); }
-    /* rodapé escuro, igual ao site público */
-    footer { background: var(--dark); color: rgba(240,234,210,.6); margin-top: 34px; }
+
+    /* Botão recolher/expandir "Aulas anteriores" */
+    .archive-toggle {
+      margin-top: 18px;
+      display: inline-flex; align-items: center; gap: 9px;
+      border: 1px solid var(--line); background: var(--paper-2); color: var(--ink);
+      padding: 11px 20px; border-radius: 999px;
+      font-family: var(--sans); font-weight: 800; font-size: 0.85rem;
+      cursor: pointer; transition: 0.2s ease;
+    }
+    .archive-toggle:hover, .archive-toggle[aria-expanded="true"] {
+      background: var(--teal); border-color: var(--teal); color: #f3efe1;
+    }
+    .archive-toggle__icon { font-size: 0.9rem; transition: transform 0.25s ease; }
+    .archive-toggle[aria-expanded="true"] .archive-toggle__icon { transform: rotate(180deg); }
+    .archive-panel { margin-top: 20px; }
+    .archive-panel[hidden] { display: none; }
+
+    /* Resumo curto na capa (fica aguardando a prévia do vídeo) */
+    .cover-summary {
+      max-width: 94%; margin: 6px 0 0;
+      color: var(--muted); font-size: 0.82rem; font-weight: 600; line-height: 1.35;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    /* Rodapé em faixa preta com barra vermelha (igual ao site) */
+    footer.belt-foot {
+      display: flex; padding: 0; margin-top: 34px; text-align: left;
+      background: var(--dark); font-family: var(--sans); font-weight: 800; font-size: 0.9rem;
+    }
+    .belt-foot__main {
+      flex: 1; display: flex; align-items: center;
+      padding: clamp(26px, 4vw, 40px) 20px; color: rgba(226, 223, 200, 0.82);
+    }
+    .belt-foot__accent {
+      width: 22%; min-width: 150px;
+      display: flex; align-items: center; justify-content: center;
+      padding: clamp(26px, 4vw, 40px) 18px;
+      background: var(--red); color: #f9e4e0; text-align: center;
+    }
   </style>
 </head>
 
@@ -587,23 +625,34 @@
       <h2 id="archive-title">Aulas anteriores</h2>
       <p class="section-description">
         Revise as posições pela data da aula e use as tags para encontrar um tema específico.
+        Os vídeos serão liberados aqui conforme as aulas forem gravadas.
       </p>
 
-      <div class="archive-tools">
-        <label class="search-box">
-          <span class="sr-only">Buscar aula</span>
-          <input id="lessonSearch" type="search" placeholder="Buscar posição, tema ou data" autocomplete="off" />
-        </label>
-        <div class="tag-filters" id="tagFilters" aria-label="Filtrar aulas por tema"></div>
-      </div>
+      <button class="archive-toggle" id="archiveToggle" type="button" aria-expanded="false" aria-controls="archivePanel">
+        <span class="archive-toggle__label">Ver aulas anteriores</span>
+        <span class="archive-toggle__icon" aria-hidden="true">▾</span>
+      </button>
 
-      <p class="results-line" id="resultsLine" aria-live="polite"></p>
-      <div class="lesson-grid" id="lessonGrid"></div>
-      <div class="empty-state" id="emptyState">Nenhuma aula encontrada com esse filtro.</div>
+      <div class="archive-panel" id="archivePanel" hidden>
+        <div class="archive-tools">
+          <label class="search-box">
+            <span class="sr-only">Buscar aula</span>
+            <input id="lessonSearch" type="search" placeholder="Buscar posição, tema ou data" autocomplete="off" />
+          </label>
+          <div class="tag-filters" id="tagFilters" aria-label="Filtrar aulas por tema"></div>
+        </div>
+
+        <p class="results-line" id="resultsLine" aria-live="polite"></p>
+        <div class="lesson-grid" id="lessonGrid"></div>
+        <div class="empty-state" id="emptyState">Nenhuma aula encontrada com esse filtro.</div>
+      </div>
     </section>
   </main>
 
-  <footer>Leo Thaylor · Jiu-jitsu · Rio de Janeiro</footer>
+  <footer class="belt-foot">
+    <div class="belt-foot__main"><span>Leo Thaylor · Jiu-jitsu · Rio de Janeiro</span></div>
+    <div class="belt-foot__accent"><span>Área do Aluno</span></div>
+  </footer>
 
   <div class="video-modal" id="videoModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-dialog">
@@ -813,7 +862,7 @@
 
         const cover = lesson.thumbnail
           ? '<img src="' + escapeHTML(lesson.thumbnail) + '" alt="Capa da aula ' + escapeHTML(lesson.title) + '" loading="lazy">'
-          : '<div class="cover-placeholder"><span>Aula registrada</span><strong>' + escapeHTML(lesson.title) + '</strong></div>';
+          : '<div class="cover-placeholder"><span>Aula registrada</span><p class="cover-summary">' + escapeHTML(lesson.summary) + '</p></div>';
 
         const action = hasVideo
           ? '<button class="watch-btn" type="button" data-video="' + escapeHTML(lesson.videoUrl) + '" data-title="' + escapeHTML(lesson.title) + '">Assistir</button>'
@@ -826,7 +875,6 @@
           '<div class="lesson-body">' +
             '<div class="lesson-date">' + escapeHTML(lesson.dateLabel) + '</div>' +
             '<h3 class="lesson-title">' + escapeHTML(lesson.title) + '</h3>' +
-            '<p class="lesson-summary">' + escapeHTML(lesson.summary) + '</p>' +
             '<div class="lesson-tags">' + tags + '</div>' +
             '<div class="lesson-actions">' + action + '<span class="lesson-level">' + escapeHTML(lesson.level) + '</span></div>' +
           '</div>' +
@@ -882,6 +930,23 @@
         sessionStorage.clear();
         window.location.href = "index.html";
       });
+
+      /* Recolher/expandir a seção de aulas anteriores */
+      const archiveToggle = document.getElementById("archiveToggle");
+      const archivePanel = document.getElementById("archivePanel");
+      if (archiveToggle && archivePanel) {
+        archiveToggle.addEventListener("click", function () {
+          const willOpen = archivePanel.hasAttribute("hidden");
+          if (willOpen) {
+            archivePanel.removeAttribute("hidden");
+          } else {
+            archivePanel.setAttribute("hidden", "");
+          }
+          archiveToggle.setAttribute("aria-expanded", String(willOpen));
+          const label = archiveToggle.querySelector(".archive-toggle__label");
+          if (label) label.textContent = willOpen ? "Ocultar aulas anteriores" : "Ver aulas anteriores";
+        });
+      }
 
       configurePlanner();
       renderTagFilters();
