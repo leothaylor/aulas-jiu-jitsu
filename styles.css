@@ -153,8 +153,8 @@ em{font-style:italic; color:var(--teal-deep)}
 
 /* Cena 2 — split */
 .scene--split{display:grid; grid-template-columns:1fr 1fr; gap:clamp(2rem,5vw,5rem); align-items:center; padding-block:clamp(56px,8vh,110px)}
-.scene__figure{margin:0; position:relative; border-radius:var(--r); overflow:hidden; height:min(72vh,560px)}
-.scene__figure img{width:100%; height:100%; object-fit:cover; object-position:50% 35%}
+.scene__figure{margin:0; position:relative; border-radius:var(--r); overflow:hidden; aspect-ratio:828/1523}
+.scene__figure img{width:100%; height:100%; object-fit:cover; object-position:50% 50%}
 .scene__figure figcaption{position:absolute; left:16px; bottom:14px; color:#fff; font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; background:rgba(23,21,18,.5); padding:.4em .8em; border-radius:99px; backdrop-filter:blur(4px)}
 
 /* Cena 3 — método */
@@ -280,7 +280,6 @@ em{font-style:italic; color:var(--teal-deep)}
   .scene--split,.scene--place{grid-template-columns:1fr}
   .steps{grid-template-columns:repeat(2,1fr)}
   .cards{grid-template-columns:1fr}
-  .scene__figure img{aspect-ratio:16/10}
 }
 @media (max-width:720px){
   .nav__links{
