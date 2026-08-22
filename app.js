@@ -133,43 +133,53 @@
       const W = () => window.innerWidth;
       const H = () => window.innerHeight;
 
-      /* estado inicial por card: vindo de cima-direita, em curva/leque */
+      const PI = Math.PI;
+      const easeInOut = (t) =>
+        t <= 0 ? 0 : t >= 1 ? 1 : (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+      /* estado inicial por card: espiral (raio + ângulo) vinda de cima-direita */
       const starts = tiles.map((el, i) => {
         const s = n > 1 ? i / (n - 1) : 0;
         return {
-          dx: 0.55 + 0.65 * (1 - s),  /* fração de W (direita) */
-          dy: -0.55 - 0.35 * s,       /* fração de H (acima) */
-          rz: -16 + 26 * s,           /* graus */
-          ry: 32,                     /* graus (inclinação 3D) */
-          tz: -700,                   /* px de profundidade */
-          sc: 0.55
+          A0: -0.25 * PI - s * 0.18 * PI,      /* ângulo inicial (cima-direita), espalhado */
+          sweep: -(1.55 * PI + 0.5 * PI * s),  /* varredura ~1 volta (horário) => espiral */
+          Rf: 0.72 + 0.22 * (1 - s),           /* raio inicial (fração de H) */
+          spin: -230 - 140 * s,                /* giro do próprio card (graus) */
+          ry: 44,                              /* inclinação 3D inicial (graus) */
+          tz: -840,                            /* profundidade inicial (px) */
+          sc: 0.46                             /* escala inicial */
         };
       });
 
-      const STAGGER = 0.045, DUR = 0.5;
+      /* mais lento: janela maior por card + mais escalonamento */
+      const STAGGER = 0.052, DUR = 0.52;
 
       function apply(p) {
-        const w = W(), h = H();
+        const h = H();
         for (let i = 0; i < n; i++) {
           const st = starts[i];
-          const lp = easeOut((p - i * STAGGER) / DUR);
+          const raw = (p - i * STAGGER) / DUR;   /* progresso bruto do card */
+          const lp = easeInOut(raw);             /* 0 (espiral longe) -> 1 (na grade) */
           const inv = 1 - lp;
-          const tx = st.dx * w * inv;
-          const ty = st.dy * h * inv;
-          const tz = st.tz * inv;
+          const r = st.Rf * h * inv;             /* raio encolhe */
+          const ang = st.A0 + st.sweep * lp;     /* ângulo varre => movimento em espiral */
+          const ox = r * Math.cos(ang);
+          const oy = r * Math.sin(ang);
+          const rz = st.spin * inv;
           const ry = st.ry * inv;
-          const rz = st.rz * inv;
+          const tz = st.tz * inv;
           const sc = st.sc + (1 - st.sc) * lp;
           tiles[i].style.transform =
-            "translate3d(" + tx.toFixed(1) + "px," + ty.toFixed(1) + "px," + tz.toFixed(0) + "px)" +
+            "translate3d(" + ox.toFixed(1) + "px," + oy.toFixed(1) + "px," + tz.toFixed(0) + "px)" +
             " rotateY(" + ry.toFixed(1) + "deg) rotateZ(" + rz.toFixed(1) + "deg) scale(" + sc.toFixed(3) + ")";
-          tiles[i].style.opacity = Math.min(1, lp * 1.6).toFixed(3);
+          tiles[i].style.opacity = Math.min(1, Math.max(0, raw * 2)).toFixed(3);
         }
       }
 
+      /* alcance de scroll bem maior => entrada mais lenta e visível */
       function progress() {
         const r = mgrid.getBoundingClientRect();
-        const start = 0.9 * H(), end = 0.3 * H();
+        const start = 1.05 * H(), end = -0.45 * H();
         return Math.min(1, Math.max(0, (start - r.top) / (start - end)));
       }
 
