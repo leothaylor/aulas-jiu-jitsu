@@ -31,6 +31,24 @@
     reveals.forEach((el) => io.observe(el));
   }
 
+  /* ---------- Marquee: começa alinhado quando entra na tela ---------- */
+  const marquee = $("[data-marquee]");
+  if (marquee) {
+    if (reduce || !("IntersectionObserver" in window)) {
+      marquee.classList.add("is-running");
+    } else {
+      const marqueeIO = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) return;
+          marquee.classList.add("is-running");
+          marqueeIO.disconnect();
+        },
+        { threshold: 0.15 }
+      );
+      marqueeIO.observe(marquee);
+    }
+  }
+
   /* ---------- Nav sticky ---------- */
   const nav = $("[data-nav]");
   const hero = $("#inicio");
