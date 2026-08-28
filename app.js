@@ -7,6 +7,12 @@
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
+  /* ---------- Estabilização do limite vertical no mobile ---------- */
+  if (isTouch) {
+    document.documentElement.style.overscrollBehaviorY = "none";
+    document.body.style.overscrollBehaviorY = "none";
+  }
+
   /* ---------- Reveals ---------- */
   const reveals = $$("[data-reveal],[data-reveal-line]");
   if (reduce || !("IntersectionObserver" in window)) {
@@ -159,13 +165,13 @@
       const starts = tiles.map((el, i) => {
         const s = n > 1 ? i / (n - 1) : 0;
         return {
-          A0: -0.28 * PI - s * 0.16 * PI,      /* ângulo inicial (cima-direita), espalhado */
-          sweep: -(1.15 * PI + 0.35 * PI * s), /* varredura ~200-270° => espiral visível */
-          Rf: 0.34 + 0.16 * (1 - s),           /* raio inicial menor (fração de H) => espiral na tela */
-          spin: -30 - 22 * s,                  /* giro suave do card (nunca de cabeça pra baixo) */
-          ry: 34,                              /* inclinação 3D inicial (graus) */
-          tz: -520,                            /* profundidade inicial (px) */
-          sc: 0.58                             /* escala inicial */
+          A0: -0.28 * PI - s * 0.16 * PI,
+          sweep: -(1.15 * PI + 0.35 * PI * s),
+          Rf: 0.34 + 0.16 * (1 - s),
+          spin: -30 - 22 * s,
+          ry: 34,
+          tz: -520,
+          sc: 0.58
         };
       });
 
@@ -176,11 +182,11 @@
         const h = H();
         for (let i = 0; i < n; i++) {
           const st = starts[i];
-          const raw = (p - i * STAGGER) / DUR;   /* progresso bruto do card */
-          const lp = easeInOut(raw);             /* 0 (espiral longe) -> 1 (na grade) */
+          const raw = (p - i * STAGGER) / DUR;
+          const lp = easeInOut(raw);
           const inv = 1 - lp;
-          const r = st.Rf * h * inv;             /* raio encolhe */
-          const ang = st.A0 + st.sweep * lp;     /* ângulo varre => movimento em espiral */
+          const r = st.Rf * h * inv;
+          const ang = st.A0 + st.sweep * lp;
           const ox = r * Math.cos(ang);
           const oy = r * Math.sin(ang);
           const rz = st.spin * inv;
@@ -230,7 +236,6 @@
     const POINTER = "a, button, [role='button'], .btn, .filter-btn, .nav__burger, summary, label";
 
     window.addEventListener("mousemove", (e) => {
-      /* posição instantânea — sem delay, gruda no ponteiro nativo */
       cur.style.transform = "translate3d(" + e.clientX + "px," + e.clientY + "px,0) translate(-50%,-50%)";
       if (!seen) { seen = true; cur.classList.remove("is-hidden"); }
       const t = e.target;
