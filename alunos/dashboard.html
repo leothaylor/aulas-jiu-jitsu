@@ -7,7 +7,6 @@
   <meta name="theme-color" content="#E2DFC8" />
   <title>Área do Aluno · Leo Thaylor</title>
 
-  <!-- Mantém a autenticação atual. Substitua somente alunos/dashboard.html. -->
   <script>
     if (sessionStorage.getItem("bjj_auth") !== "true") {
       window.location.replace("index.html");
@@ -21,562 +20,158 @@
 
   <style>
     :root {
-      --paper: #e2dfc8;
-      --paper-2: #edebdb;
-      --paper-3: #cbc7ae;
-      --ink: #3a3826;
-      --muted: #6a6750;
-      --teal: #0a8f6f;
-      --teal-deep: #076a53;
-      --teal-soft: rgba(10, 143, 111, 0.12);
-      --line: rgba(58, 56, 38, 0.16);
-      --line-strong: rgba(58, 56, 38, 0.27);
-      --shadow: 0 18px 45px rgba(58, 56, 38, 0.09);
+      --paper:#e2dfc8;
+      --paper-2:#edebdb;
+      --paper-3:#cbc7ae;
+      --ink:#2a2818;
+      --muted:#5c5944;
+      --teal:#0a8f6f;
+      --teal-deep:#076a53;
+      --teal-bright:#37cfa6;
+      --teal-soft:rgba(10,143,111,.12);
+      --sage:#8a9e7e;
+      --dark:#171512;
+      --red:#c23b2e;
+      --line:rgba(42,40,24,.14);
+      --line-strong:rgba(42,40,24,.27);
+      --shadow:0 18px 45px rgba(58,56,38,.09);
+      --sans:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
     }
 
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--paper);
-      color: var(--ink);
-      font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-      font-weight: 600;
-      line-height: 1.55;
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      background:var(--paper);
+      color:var(--ink);
+      font-family:var(--sans);
+      font-weight:400;
+      line-height:1.55;
     }
+    button,input{font:inherit}
+    button,a{-webkit-tap-highlight-color:transparent}
+    button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(10,143,111,.35);outline-offset:3px}
 
-    button, input { font: inherit; }
-    button, a { -webkit-tap-highlight-color: transparent; }
+    .wrap{width:min(1180px,calc(100% - 40px));margin:0 auto}
 
-    button:focus-visible, a:focus-visible, input:focus-visible {
-      outline: 3px solid rgba(10, 143, 111, 0.35);
-      outline-offset: 3px;
+    .site-header{
+      position:sticky;top:0;z-index:20;
+      background:rgba(226,223,200,.93);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--line);
     }
+    .header-inner{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{display:flex;align-items:center;gap:11px;min-width:0}
+    .brand-mark{width:34px;height:34px;flex:0 0 auto;display:grid;place-items:center;border-radius:50%;background:var(--teal);color:#f3efe1;font-size:.78rem;font-weight:900}
+    .brand-copy strong,.brand-copy span{display:block}
+    .brand-copy strong{font-size:.96rem;font-weight:600;line-height:1.1}
+    .brand-copy span{margin-top:3px;color:var(--muted);font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .header-actions{display:flex;align-items:center;gap:10px}
+    .back-link{color:var(--teal-bright);font-size:.8rem;font-weight:600;text-decoration:none;padding-bottom:3px;background-image:linear-gradient(currentColor,currentColor);background-size:0 2px;background-position:0 100%;background-repeat:no-repeat;transition:.3s ease}
+    .back-link:hover,.back-link:focus-visible{background-size:100% 2px;color:var(--teal-deep)}
+    .logout{border:1px solid var(--line);background:transparent;color:var(--ink);font-size:.8rem;font-weight:800;padding:9px 18px;border-radius:999px;cursor:pointer;transition:.2s ease}
+    .logout:hover{background:var(--teal);border-color:var(--teal);color:#f3efe1}
 
-    .wrap {
-      width: min(1180px, calc(100% - 40px));
-      margin: 0 auto;
+    main{padding:28px 0 20px}
+    section{padding:20px 0 32px}
+    .kicker{margin:0 0 4px;color:var(--teal-deep);font-size:.7rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase}
+    h1,h2,h3,p{margin-top:0}
+    h1,h2{margin-bottom:0;font-weight:600;letter-spacing:-.025em;line-height:1.1;color:var(--sage)}
+    h1{font-size:clamp(2rem,5.2vw,3.4rem)}
+    h2{font-size:clamp(1.6rem,3.8vw,2.4rem)}
+    .section-description{max-width:640px;margin:10px 0 0;color:var(--muted);font-size:.96rem}
+
+    .class-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+    .class-meta span{display:inline-flex;align-items:center;min-height:32px;padding:6px 12px;border:1px solid rgba(10,143,111,.2);border-radius:999px;background:rgba(237,235,219,.58);color:var(--teal-deep);font-size:.72rem;font-weight:900;letter-spacing:.04em}
+
+    .planner-shell{margin-top:16px;overflow:hidden;border:1px solid var(--line);border-radius:18px;background:var(--paper-2);box-shadow:var(--shadow)}
+    .planner-meta{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 18px;border-bottom:1px solid var(--line)}
+    .planner-meta strong{font-size:.92rem;font-weight:900}
+    .planner-meta span{color:var(--muted);font-size:.78rem;font-weight:800}
+    .planner-image-wrap{min-height:230px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(10,143,111,.09),transparent 58%),var(--paper-3)}
+    .planner-image{display:block;width:100%;height:auto;max-height:680px;object-fit:contain}
+    .planner-fallback{display:none;max-width:520px;padding:42px 24px;text-align:center;color:var(--muted)}
+    .planner-fallback strong{display:block;margin-bottom:7px;color:var(--ink);font-size:1.05rem;font-weight:900}
+
+    .archive-toggle{margin-top:18px;display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--paper-2);color:var(--ink);padding:11px 20px;border-radius:999px;font-weight:800;font-size:.85rem;cursor:pointer;transition:.2s ease}
+    .archive-toggle:hover,.archive-toggle[aria-expanded="true"]{background:var(--teal);border-color:var(--teal);color:#f3efe1}
+    .archive-toggle__icon{font-size:.9rem;transition:transform .25s ease}
+    .archive-toggle[aria-expanded="true"] .archive-toggle__icon{transform:rotate(180deg)}
+    .archive-panel{margin-top:20px}
+    .archive-panel[hidden]{display:none}
+
+    .archive-tools{display:grid;grid-template-columns:1fr;gap:12px;margin:20px 0 10px}
+    .search-box{position:relative}
+    .search-box::before{content:"⌕";position:absolute;left:16px;top:50%;transform:translateY(-52%);color:var(--teal);font-size:1.25rem;font-weight:900}
+    .search-box input{width:100%;min-height:48px;padding:0 16px 0 43px;border:1px solid var(--line);border-radius:13px;background:var(--paper-2);color:var(--ink);font-weight:700}
+
+    .tag-filter-wrap{position:relative;min-width:0}
+    .tag-filters{display:flex;flex-wrap:wrap;gap:8px;max-height:82px;overflow:hidden;transition:max-height .28s ease}
+    .tag-filters.expanded{max-height:420px}
+    .filter-btn{border:1px solid var(--line);background:transparent;color:var(--muted);padding:8px 13px;border-radius:999px;font-size:.75rem;font-weight:900;cursor:pointer;transition:.2s ease}
+    .filter-btn:hover,.filter-btn.active{background:var(--teal);border-color:var(--teal);color:#f3efe1}
+    .tags-toggle{margin-top:9px;border:0;background:transparent;color:var(--teal-deep);padding:3px 0;font-size:.75rem;font-weight:900;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+    .tags-toggle[hidden]{display:none}
+
+    .results-line{margin:14px 0;color:var(--muted);font-size:.82rem;font-weight:800}
+    .lesson-grid{display:grid;grid-template-columns:1fr;gap:16px}
+    .lesson-card{overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;background:#e9e6d0;box-shadow:0 12px 28px rgba(58,56,38,.045);transition:.22s ease}
+    .lesson-card:hover{transform:translateY(-3px);border-color:var(--line-strong);box-shadow:var(--shadow)}
+    .lesson-cover{position:relative;aspect-ratio:16/9;overflow:hidden;background:linear-gradient(145deg,rgba(10,143,111,.22),rgba(138,158,126,.28)),var(--paper-3)}
+    .lesson-cover img{width:100%;height:100%;object-fit:cover}
+    .cover-placeholder{width:100%;height:100%;padding:22px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end}
+    .cover-placeholder span{color:var(--teal-deep);font-size:.66rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
+    .cover-summary{max-width:94%;margin:6px 0 0;color:var(--muted);font-size:.82rem;font-weight:600;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+    .video-badge{position:absolute;top:12px;right:12px;padding:6px 9px;border-radius:999px;background:rgba(58,56,38,.78);color:#f3efe1;font-size:.63rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+    .video-badge.ready{background:var(--teal-deep)}
+    .lesson-body{flex:1;display:flex;flex-direction:column;padding:18px}
+    .lesson-date{margin-bottom:7px;color:var(--teal-deep);font-size:.74rem;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+    .lesson-title{margin:0;font-size:1.16rem;font-weight:600;line-height:1.27;color:var(--ink)}
+    .lesson-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+    .lesson-tag{padding:5px 8px;border-radius:999px;background:var(--teal-soft);color:var(--teal-deep);font-size:.66rem;font-weight:900}
+    .lesson-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:18px}
+    .watch-btn{min-height:40px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:var(--teal);color:#f3efe1;padding:9px 17px;font-size:.78rem;font-weight:900;cursor:pointer;transition:.2s ease;box-shadow:0 8px 20px rgba(10,143,111,.22)}
+    .watch-btn:hover{background:var(--teal-deep)}
+    .watch-btn[disabled]{background:rgba(58,56,38,.15);color:var(--muted);cursor:not-allowed;box-shadow:none}
+    .lesson-level{color:var(--muted);font-size:.68rem;font-weight:900;text-align:right}
+    .empty-state{display:none;padding:36px 22px;border:1px dashed var(--line-strong);border-radius:16px;text-align:center;color:var(--muted)}
+
+    .video-modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(30,29,21,.78);backdrop-filter:blur(7px)}
+    .video-modal.open{display:flex}
+    .modal-dialog{width:min(960px,100%);overflow:hidden;border-radius:17px;background:var(--paper-2);box-shadow:0 30px 80px rgba(0,0,0,.38)}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 16px;border-bottom:1px solid var(--line)}
+    .modal-title{margin:0;font-size:.94rem;font-weight:600}
+    .modal-close{width:36px;height:36px;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink);font-size:1.15rem;font-weight:900;cursor:pointer}
+    .modal-video{aspect-ratio:16/9;background:#191913}
+    .modal-video iframe{width:100%;height:100%;border:0}
+
+    footer.belt-foot{display:flex;padding:0;margin-top:34px;text-align:left;background:var(--dark);font-weight:800;font-size:.9rem}
+    .belt-foot__main{flex:1;display:flex;align-items:center;padding:clamp(26px,4vw,40px) 20px;color:rgba(226,223,200,.82)}
+    .belt-foot__accent{width:22%;min-width:150px;display:flex;align-items:center;justify-content:center;padding:clamp(26px,4vw,40px) 18px;background:var(--red);color:#f9e4e0;text-align:center}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    @media(min-width:700px){
+      .archive-tools{grid-template-columns:minmax(260px,.85fr) minmax(0,1.7fr);align-items:start}
+      .lesson-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
-
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(226, 223, 200, 0.93);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--line);
+    @media(min-width:1040px){.lesson-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media(max-width:620px){
+      .wrap{width:min(100% - 26px,1180px)}
+      .header-inner{min-height:62px}
+      .brand-copy span{display:none}
+      main{padding-top:20px}
+      section{padding-top:16px}
+      .planner-meta{align-items:flex-start;flex-direction:column;gap:2px}
+      .planner-image-wrap{min-height:180px}
+      .class-meta{gap:6px}
+      .class-meta span{font-size:.68rem;padding:5px 9px}
+      .tag-filters{max-height:100px}
+      .tag-filters.expanded{max-height:700px}
+      footer.belt-foot{font-size:.78rem}
+      .belt-foot__accent{min-width:120px}
     }
-
-    .header-inner {
-      min-height: 68px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      min-width: 0;
-    }
-
-    .brand-mark {
-      width: 34px;
-      height: 34px;
-      flex: 0 0 auto;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: var(--teal);
-      color: #f3efe1;
-      font-size: 0.78rem;
-      font-weight: 900;
-    }
-
-    .brand-copy strong, .brand-copy span { display: block; }
-    .brand-copy strong { font-size: 0.96rem; font-weight: 900; line-height: 1.1; }
-    .brand-copy span {
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 0.68rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .logout {
-      border: 1px solid var(--line);
-      background: transparent;
-      color: var(--ink);
-      font-size: 0.8rem;
-      font-weight: 800;
-      padding: 9px 18px;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .logout:hover { background: var(--teal); border-color: var(--teal); color: #f3efe1; }
-
-    .header-actions { display: flex; align-items: center; gap: 10px; }
-
-    .back-link {
-      color: var(--ink);
-      font-size: 0.8rem;
-      font-weight: 800;
-      text-decoration: none;
-    }
-
-    .back-link:hover { color: var(--teal-deep); }
-
-    main { padding: 42px 0 20px; }
-    section { padding: 24px 0 34px; }
-
-    .kicker {
-      margin: 0 0 4px;
-      color: var(--teal);
-      font-size: 0.7rem;
-      font-weight: 900;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-    }
-
-    h1, h2, h3, p { margin-top: 0; }
-    h1, h2 {
-      margin-bottom: 0;
-      font-weight: 900;
-      letter-spacing: -0.025em;
-      line-height: 1.1;
-    }
-    h1 { font-size: clamp(1.75rem, 4.5vw, 3rem); }
-    h2 { font-size: clamp(1.5rem, 3.5vw, 2.15rem); }
-
-    .section-description {
-      max-width: 620px;
-      margin: 10px 0 0;
-      color: var(--muted);
-      font-size: 0.96rem;
-    }
-
-    /* Banner semanal */
-    .planner-shell {
-      margin-top: 20px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: var(--paper-2);
-      box-shadow: var(--shadow);
-    }
-
-    .planner-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 15px 18px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .planner-meta strong { font-size: 0.92rem; font-weight: 900; }
-    .planner-meta span { color: var(--muted); font-size: 0.78rem; font-weight: 800; }
-
-    .planner-image-wrap {
-      min-height: 230px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, rgba(10,143,111,.09), transparent 58%), var(--paper-3);
-    }
-
-    .planner-image {
-      display: block;
-      width: 100%;
-      height: auto;
-      max-height: 680px;
-      object-fit: contain;
-    }
-
-    .planner-fallback {
-      display: none;
-      max-width: 520px;
-      padding: 42px 24px;
-      text-align: center;
-      color: var(--muted);
-    }
-
-    .planner-fallback strong {
-      display: block;
-      margin-bottom: 7px;
-      color: var(--ink);
-      font-size: 1.05rem;
-      font-weight: 900;
-    }
-
-    /* Filtros */
-    .archive-tools {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-      margin: 20px 0 18px;
-    }
-
-    .search-box { position: relative; }
-    .search-box::before {
-      content: "⌕";
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-52%);
-      color: var(--teal);
-      font-size: 1.25rem;
-      font-weight: 900;
-    }
-
-    .search-box input {
-      width: 100%;
-      min-height: 48px;
-      padding: 0 16px 0 43px;
-      border: 1px solid var(--line);
-      border-radius: 13px;
-      background: var(--paper-2);
-      color: var(--ink);
-      font-weight: 700;
-    }
-
-    .tag-filters { display: flex; flex-wrap: wrap; gap: 8px; }
-
-    .filter-btn {
-      border: 1px solid var(--line);
-      background: transparent;
-      color: var(--muted);
-      padding: 8px 13px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 900;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .filter-btn:hover, .filter-btn.active {
-      background: var(--teal);
-      border-color: var(--teal);
-      color: #f3efe1;
-    }
-
-    .results-line {
-      margin: 0 0 14px;
-      color: var(--muted);
-      font-size: 0.82rem;
-      font-weight: 800;
-    }
-
-    /* Cards */
-    .lesson-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-
-    .lesson-card {
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: var(--paper-2);
-      box-shadow: 0 12px 28px rgba(58,56,38,.045);
-      transition: 0.22s ease;
-    }
-
-    .lesson-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--line-strong);
-      box-shadow: var(--shadow);
-    }
-
-    .lesson-cover {
-      position: relative;
-      aspect-ratio: 16 / 9;
-      overflow: hidden;
-      background: linear-gradient(145deg, rgba(10,143,111,.24), rgba(58,56,38,.08)), var(--paper-3);
-    }
-
-    .lesson-cover img { width: 100%; height: 100%; object-fit: cover; }
-
-    .cover-placeholder {
-      width: 100%;
-      height: 100%;
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: flex-end;
-    }
-
-    .cover-placeholder span {
-      color: var(--teal-deep);
-      font-size: 0.66rem;
-      font-weight: 900;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-
-    .cover-placeholder strong {
-      max-width: 94%;
-      margin-top: 6px;
-      font-size: 1.08rem;
-      font-weight: 900;
-      line-height: 1.15;
-    }
-
-    .video-badge {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      padding: 6px 9px;
-      border-radius: 999px;
-      background: rgba(58,56,38,.78);
-      color: #f3efe1;
-      font-size: 0.63rem;
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .video-badge.ready { background: var(--teal-deep); }
-
-    .lesson-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 18px;
-    }
-
-    .lesson-date {
-      margin-bottom: 7px;
-      color: var(--teal-deep);
-      font-size: 0.74rem;
-      font-weight: 900;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .lesson-title { margin: 0; font-size: 1.02rem; font-weight: 900; line-height: 1.27; }
-    .lesson-summary { margin: 9px 0 0; color: var(--muted); font-size: 0.86rem; }
-
-    .lesson-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
-    .lesson-tag {
-      padding: 5px 8px;
-      border-radius: 999px;
-      background: var(--teal-soft);
-      color: var(--teal-deep);
-      font-size: 0.66rem;
-      font-weight: 900;
-    }
-
-    .lesson-actions {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-top: auto;
-      padding-top: 18px;
-    }
-
-    .watch-btn {
-      min-height: 40px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 0;
-      border-radius: 999px;
-      background: var(--teal);
-      color: #f3efe1;
-      padding: 9px 17px;
-      font-size: 0.78rem;
-      font-weight: 900;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .watch-btn:hover { background: var(--teal-deep); }
-    .watch-btn[disabled] { background: rgba(58,56,38,.15); color: var(--muted); cursor: not-allowed; }
-    .lesson-level { color: var(--muted); font-size: 0.68rem; font-weight: 900; text-align: right; }
-
-    .empty-state {
-      display: none;
-      padding: 36px 22px;
-      border: 1px dashed var(--line-strong);
-      border-radius: 16px;
-      text-align: center;
-      color: var(--muted);
-    }
-
-    /* Modal */
-    .video-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: rgba(30,29,21,.78);
-      backdrop-filter: blur(7px);
-    }
-
-    .video-modal.open { display: flex; }
-    .modal-dialog {
-      width: min(960px, 100%);
-      overflow: hidden;
-      border-radius: 17px;
-      background: var(--paper-2);
-      box-shadow: 0 30px 80px rgba(0,0,0,.38);
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .modal-title { margin: 0; font-size: 0.94rem; font-weight: 900; }
-    .modal-close {
-      width: 36px;
-      height: 36px;
-      border: 1px solid var(--line);
-      border-radius: 50%;
-      background: transparent;
-      color: var(--ink);
-      font-size: 1.15rem;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .modal-video { aspect-ratio: 16 / 9; background: #191913; }
-    .modal-video iframe { width: 100%; height: 100%; border: 0; }
-
-    footer {
-      padding: 38px 20px 48px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.76rem;
-      font-weight: 800;
-    }
-
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    @media (min-width: 700px) {
-      .archive-tools { grid-template-columns: minmax(260px,.85fr) minmax(0,1.7fr); align-items: center; }
-      .lesson-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
-    }
-
-    @media (min-width: 1040px) {
-      .lesson-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
-    }
-
-    @media (max-width: 620px) {
-      .wrap { width: min(100% - 26px, 1180px); }
-      .header-inner { min-height: 62px; }
-      .brand-copy span { display: none; }
-      main { padding-top: 28px; }
-      .planner-meta { align-items: flex-start; flex-direction: column; gap: 2px; }
-      .planner-image-wrap { min-height: 180px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
-    }
-
-    /* ===================================================================
-       V2 SKIN — reaproveita o design system do site público (Nunito,
-       sage nos títulos, teal vibrante). Só visual; a lógica/JS e
-       os nomes de classe permanecem intactos.
-       =================================================================== */
-    :root {
-      --display: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-      --sans: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-      --sage: #8a9e7e; --dark: #171512; --red: #c23b2e; --teal-bright: #37cfa6;
-      --ink: #2a2818; --muted: #5c5944;
-    }
-    body { font-family: var(--sans); font-weight: 400; }
-    .brand-mark { background: var(--teal); font-family: var(--sans); }
-    .brand-copy strong { font-family: var(--display); font-weight: 600; letter-spacing: -.01em; }
-    .kicker { color: var(--teal-deep); }
-    h1, h2 { font-family: var(--display); font-weight: 600; color: var(--sage); letter-spacing: -.02em; }
-    h1 { font-size: clamp(2rem, 5.2vw, 3.4rem); }
-    h2 { font-size: clamp(1.6rem, 3.8vw, 2.4rem); }
-    .section-description { color: var(--muted); }
-    .lesson-title { font-family: var(--display); font-weight: 600; font-size: 1.16rem; color: var(--ink); }
-    .cover-placeholder strong { font-family: var(--display); font-weight: 600; }
-    .modal-title { font-family: var(--display); font-weight: 600; }
-    .lesson-card { background: #e9e6d0; border-color: rgba(42,40,24,.12); }
-    .lesson-cover { background: linear-gradient(145deg, rgba(10,143,111,.22), rgba(138,158,126,.28)), var(--paper-3); }
-    /* link "Voltar ao site" vibrante com underline animado */
-    .back-link {
-      color: var(--teal-bright); font-weight: 600; padding-bottom: 3px;
-      background-image: linear-gradient(currentColor, currentColor);
-      background-size: 0% 2px; background-position: 0 100%; background-repeat: no-repeat;
-      transition: background-size .3s ease, color .3s ease;
-    }
-    .back-link:hover, .back-link:focus-visible { background-size: 100% 2px; color: var(--teal-deep); }
-    .watch-btn { box-shadow: 0 8px 20px rgba(10,143,111,.22); }
-
-    /* Botão recolher/expandir "Aulas anteriores" */
-    .archive-toggle {
-      margin-top: 18px;
-      display: inline-flex; align-items: center; gap: 9px;
-      border: 1px solid var(--line); background: var(--paper-2); color: var(--ink);
-      padding: 11px 20px; border-radius: 999px;
-      font-family: var(--sans); font-weight: 800; font-size: 0.85rem;
-      cursor: pointer; transition: 0.2s ease;
-    }
-    .archive-toggle:hover, .archive-toggle[aria-expanded="true"] {
-      background: var(--teal); border-color: var(--teal); color: #f3efe1;
-    }
-    .archive-toggle__icon { font-size: 0.9rem; transition: transform 0.25s ease; }
-    .archive-toggle[aria-expanded="true"] .archive-toggle__icon { transform: rotate(180deg); }
-    .archive-panel { margin-top: 20px; }
-    .archive-panel[hidden] { display: none; }
-
-    /* Resumo curto na capa (fica aguardando a prévia do vídeo) */
-    .cover-summary {
-      max-width: 94%; margin: 6px 0 0;
-      color: var(--muted); font-size: 0.82rem; font-weight: 600; line-height: 1.35;
-      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-    }
-
-    /* Rodapé em faixa preta com barra vermelha (igual ao site) */
-    footer.belt-foot {
-      display: flex; padding: 0; margin-top: 34px; text-align: left;
-      background: var(--dark); font-family: var(--sans); font-weight: 800; font-size: 0.9rem;
-    }
-    .belt-foot__main {
-      flex: 1; display: flex; align-items: center;
-      padding: clamp(26px, 4vw, 40px) 20px; color: rgba(226, 223, 200, 0.82);
-    }
-    .belt-foot__accent {
-      width: 22%; min-width: 150px;
-      display: flex; align-items: center; justify-content: center;
-      padding: clamp(26px, 4vw, 40px) 18px;
-      background: var(--red); color: #f9e4e0; text-align: center;
-    }
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
   </style>
 </head>
 
@@ -601,9 +196,12 @@
     <section aria-labelledby="planner-title">
       <p class="kicker">Agenda</p>
       <h1 id="planner-title">Cronograma da semana</h1>
-      <p class="section-description">
-        Confira os temas previstos. A programação pode receber ajustes conforme a evolução real da turma.
-      </p>
+      <p class="section-description">Confira os temas previstos. A programação pode receber ajustes conforme a evolução real da turma.</p>
+      <div class="class-meta" aria-label="Informações da turma">
+        <span>SEG · QUA · SEX</span>
+        <span>10h–11h30</span>
+        <span>TRION · ANIL</span>
+      </div>
 
       <div class="planner-shell">
         <div class="planner-meta">
@@ -623,10 +221,7 @@
     <section aria-labelledby="archive-title">
       <p class="kicker">Replay</p>
       <h2 id="archive-title">Aulas anteriores</h2>
-      <p class="section-description">
-        Revise as posições pela data da aula e use as tags para encontrar um tema específico.
-        Os vídeos serão liberados aqui conforme as aulas forem gravadas.
-      </p>
+      <p class="section-description">Revise as posições pela data da aula e use a busca ou as tags para encontrar um tema específico. Os vídeos serão liberados aqui conforme forem gravados.</p>
 
       <button class="archive-toggle" id="archiveToggle" type="button" aria-expanded="false" aria-controls="archivePanel">
         <span class="archive-toggle__label">Ver aulas anteriores</span>
@@ -639,7 +234,10 @@
             <span class="sr-only">Buscar aula</span>
             <input id="lessonSearch" type="search" placeholder="Buscar posição, tema ou data" autocomplete="off" />
           </label>
-          <div class="tag-filters" id="tagFilters" aria-label="Filtrar aulas por tema"></div>
+          <div class="tag-filter-wrap">
+            <div class="tag-filters" id="tagFilters" aria-label="Filtrar aulas por tema"></div>
+            <button class="tags-toggle" id="tagsToggle" type="button" aria-expanded="false" hidden>Ver todas as tags</button>
+          </div>
         </div>
 
         <p class="results-line" id="resultsLine" aria-live="polite"></p>
@@ -665,289 +263,159 @@
   </div>
 
   <script>
-    (function () {
+    (function(){
       "use strict";
 
-      /* TROQUE SOMENTE O NOME DO BANNER A CADA SEMANA. */
-      const APP_CONFIG = {
-        weeklyPlannerImage: "../assets/images/cronograma-semana.webp",
-        weeklyPlannerAlt: "Cronograma semanal das aulas de jiu-jitsu da turma das 10h",
-        weeklyPlannerLabel: "Aulas da semana"
+      const APP_CONFIG={
+        weeklyPlannerImage:"../assets/images/cronograma-semana.webp",
+        weeklyPlannerAlt:"Cronograma semanal das aulas de jiu-jitsu da turma das 10h",
+        weeklyPlannerLabel:"Aulas da semana"
       };
 
-      /* Cole o link do YouTube em videoUrl quando gravar cada aula. */
-      const LESSONS = [
-        {
-          id: "2026-07-24-cem-quilos-delariva",
-          dateISO: "2026-07-24",
-          dateLabel: "24/07/2026",
-          title: "Cem quilos — estrangulamento e abertura da De la Riva",
-          summary: "Revisão detalhada do estrangulamento no cem quilos e drill para quebrar a De la Riva e iniciar a passagem.",
-          tags: ["Cem quilos", "Finalização", "De la Riva", "Revisão"],
-          level: "Turma mista",
-          videoUrl: "",
-          thumbnail: ""
-        },
-        {
-          id: "2026-07-22-delariva-passagem",
-          dateISO: "2026-07-22",
-          dateLabel: "22/07/2026",
-          title: "De la Riva — abertura e passagem com Breno “Porrudo”",
-          summary: "Duas soluções ligadas à guarda De la Riva, seguidas de alto volume de drill e rolas controlados.",
-          tags: ["De la Riva", "Passagem", "Drill"],
-          level: "Turma mista",
-          videoUrl: "",
-          thumbnail: ""
-        },
-        {
-          id: "2026-07-17-zguard-meia-profunda",
-          dateISO: "2026-07-17",
-          dateLabel: "17/07/2026",
-          title: "Z-Guard — meia-guarda profunda, raspagens e costas",
-          summary: "Proteção com escudo, entrada na meia-guarda profunda, controle com duas lapelas e decisão entre raspagem ou costas.",
-          tags: ["Z-Guard", "Meia-guarda", "Raspagem", "Costas", "Revisão"],
-          level: "Turma mista",
-          videoUrl: "",
-          thumbnail: ""
-        },
-        {
-          id: "2026-07-06-guarda-fechada-armlock",
-          dateISO: "2026-07-06",
-          dateLabel: "06/07/2026",
-          title: "Guarda fechada — passagem colada e armlock",
-          summary: "Passagem com referência na faixa, armlock da guarda fechada e treino específico com objetivos diferentes para top e bottom.",
-          tags: ["Guarda fechada", "Passagem", "Armlock", "Condicionado"],
-          level: "Turma mista",
-          videoUrl: "",
-          thumbnail: ""
-        },
-        {
-          id: "2026-07-03-cem-quilos-knee-on-belly",
-          dateISO: "2026-07-03",
-          dateLabel: "03/07/2026",
-          title: "Cem quilos — estrangulamento, troca de lado e joelho na barriga",
-          summary: "Crossface, underhook, estrangulamento no side control, troca de lado e progressão para knee on belly.",
-          tags: ["Cem quilos", "Side control", "Finalização", "Knee on belly"],
-          level: "Iniciante",
-          videoUrl: "",
-          thumbnail: ""
-        },
-        {
-          id: "2026-07-01-guarda-fechada-quedas",
-          dateISO: "2026-07-01",
-          dateLabel: "01/07/2026",
-          title: "Guarda fechada — abertura e sequência de quedas",
-          summary: "Abertura usando alavanca, seguida de De-ashi-barai, Uchi-mata e variação de O-uchi-gari.",
-          tags: ["Guarda fechada", "Passagem", "Quedas", "Drill"],
-          level: "Turma mista",
-          videoUrl: "",
-          thumbnail: ""
-        },
-        {
-          id: "2026-06-23-29-leg-drag",
-          dateISO: "2026-06-29",
-          dateLabel: "Semana 23–29/06/2026",
-          title: "Guarda-aranha — leg drag e estabilização no cem quilos",
-          summary: "Retirada de pegada, deslocamento lateral, leg drag, estabilização e integração com alunos de outros horários.",
-          tags: ["Guarda-aranha", "Leg drag", "Passagem", "Cem quilos"],
-          level: "Registro consolidado",
-          videoUrl: "",
-          thumbnail: ""
-        }
+      /* Regra operacional: entram aqui somente aulas efetivamente dadas à turma das 10h.
+         Planejamentos, participações do professor como aluno e treinos de outros horários ficam fora. */
+      const LESSONS=[
+        {id:"2026-08-28-costas-finalizacao",dateISO:"2026-08-28",dateLabel:"28/08/2026",title:"Costas — tomada, estabilização e finalização",summary:"Tartaruga → entrada do joelho → seatbelt → costas → estrangulamento de uma mão ou mata-leão, com repetições livres e resistência progressiva.",tags:["Costas","Tartaruga","Seatbelt","Finalização","Drill","Cem quilos"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-08-26-costas-zguard",dateISO:"2026-08-26",dateLabel:"26/08/2026",title:"Costas + Guarda Z — progressões por exposição",summary:"Parte da turma trabalhou tartaruga → costas → estrangulamento; o grupo mais avançado entrou na Guarda Z, meia-guarda profunda e raspagem da cadeirinha.",tags:["Costas","Tartaruga","Z-Guard","Meia-guarda profunda","Raspagem","Finalização"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-08-24-costas-legdrag",dateISO:"2026-08-24",dateLabel:"24/08/2026",title:"Costas — reação de frente, leg drag e retomada",summary:"Revisão da tomada direta das costas e do giro por dentro, seguida do caminho pela reação de frente: leg drag → cem quilos → retomada das costas.",tags:["Costas","Tartaruga","Leg drag","Cem quilos","Transição"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-08-21-costas-ganchos",dateISO:"2026-08-21",dateLabel:"21/08/2026",title:"Costas — ganchos e resposta à defesa",summary:"Tartaruga → seatbelt → entrada do joelho → ganchos → estabilização, incluindo a solução para quando o adversário levanta a perna e bloqueia o segundo gancho.",tags:["Costas","Tartaruga","Seatbelt","Ganchos","Revisão"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-08-19-costas-giro",dateISO:"2026-08-19",dateLabel:"19/08/2026",title:"Tartaruga — tomada das costas e giro por dentro",summary:"Repetição do controle posterior e da tomada direta das costas, com o giro por dentro trabalhado como caminho alternativo a partir da tartaruga.",tags:["Tartaruga","Costas","Giro por dentro","Rola orientado"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-08-17-tartaruga-costas",dateISO:"2026-08-17",dateLabel:"17/08/2026",title:"Tartaruga — controle, seatbelt e tomada das costas",summary:"Controle posterior com peso e pegadas, entrada do joelho, seatbelt, primeiro e segundo gancho e solução para a defesa do segundo gancho.",tags:["Tartaruga","Costas","Seatbelt","Ganchos","Controle"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-08-14-fluxo-legdrag-ezequiel",dateISO:"2026-08-14",dateLabel:"14/08/2026",title:"Passagem — abrir o leque, leg drag, montada e Ezequiel",summary:"Fluxo integrado de passagem: abrir o leque → leg drag → cem quilos → montada → Ezequiel, com introdução breve da conexão para as costas.",tags:["Passagem","Leg drag","Cem quilos","Montada","Ezequiel","Costas"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-08-12-legdrag-montada",dateISO:"2026-08-12",dateLabel:"12/08/2026",title:"Leg drag — chegada ao cem quilos e progressão para montada",summary:"Revisão da passagem até o leg drag, estabilização no cem quilos e duas formas de avançar para a montada, fechando com específico de side control.",tags:["Leg drag","Cem quilos","Montada","Drill","Condicionado"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-08-10-cemquilos-controle",dateISO:"2026-08-10",dateLabel:"10/08/2026",title:"Cem quilos — controle, frames e finalizações",summary:"Chegada e manutenção do side control, neutralização de frames e conexão cotovelo-joelho, seguida de armlock e estrangulamento com lapela.",tags:["Cem quilos","Side control","Controle","Armlock","Finalização"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-08-07-kneecut-legdrag",dateISO:"2026-08-07",dateLabel:"07/08/2026",title:"Passagem — knee cut, mudança de direção e leg drag",summary:"Entrada protegida na passagem, knee cut e estabilização; depois mudança de direção para conectar o leg drag e consolidar a passagem.",tags:["Passagem","Knee cut","Leg drag","Guarda"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-08-05-guarda-fechada-top",dateISO:"2026-08-05",dateLabel:"05/08/2026",title:"Guarda fechada — postura, abertura e passagem",summary:"Postura e segurança por cima, abertura com controle de gola e joelho, proteção dos cotovelos e entrada por baixo da perna, seguida de treino específico.",tags:["Guarda fechada","Passagem","Fundamento","Condicionado"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-08-03-omoplata-armlock",dateISO:"2026-08-03",dateLabel:"03/08/2026",title:"Guarda fechada — omoplata conectado ao armlock",summary:"Entrada no omoplata a partir da guarda fechada e transição para o armlock, organizando controle de mão, perna, quadril e ângulo.",tags:["Guarda fechada","Omoplata","Armlock","Finalização"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-07-31-reposicoes-defesas",dateISO:"2026-07-31",dateLabel:"31/07/2026",title:"Defesas — reposição do cem quilos, montada e costas",summary:"Reposição do cem quilos para guarda, recuperação da montada para meia-guarda e defesa das costas com transição para o cem quilos.",tags:["Cem quilos","Montada","Costas","Defesa","Reposição"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-07-29-montada-triangulo",dateISO:"2026-07-29",dateLabel:"29/07/2026",title:"Montada e guarda fechada — escape, armlock e triângulo",summary:"Saída da montada para meia-guarda, armlock justo da guarda fechada e construção do triângulo a partir do braço laçado e da gola cruzada.",tags:["Montada","Guarda fechada","Armlock","Triângulo","Finalização"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-07-27-montada-armlock",dateISO:"2026-07-27",dateLabel:"27/07/2026",title:"Montada — saída para meia-guarda + armlock da fechada",summary:"Proteção e criação de espaço por baixo da montada para recuperar a meia-guarda, seguida de revisão do armlock a partir da guarda fechada.",tags:["Montada","Meia-guarda","Guarda fechada","Armlock","Defesa"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-07-24-cem-quilos-delariva",dateISO:"2026-07-24",dateLabel:"24/07/2026",title:"Cem quilos — estrangulamento e abertura da De la Riva",summary:"Revisão detalhada do estrangulamento no cem quilos e drill para quebrar a De la Riva e iniciar a passagem.",tags:["Cem quilos","Finalização","De la Riva","Revisão"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-07-22-delariva-passagem",dateISO:"2026-07-22",dateLabel:"22/07/2026",title:"De la Riva — abertura e passagem com Breno “Porrudo”",summary:"Duas soluções ligadas à guarda De la Riva, seguidas de alto volume de drill e rolas controlados.",tags:["De la Riva","Passagem","Drill"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-07-17-zguard-meia-profunda",dateISO:"2026-07-17",dateLabel:"17/07/2026",title:"Z-Guard — meia-guarda profunda, raspagens e costas",summary:"Proteção com escudo, entrada na meia-guarda profunda, controle com duas lapelas e decisão entre raspagem ou costas.",tags:["Z-Guard","Meia-guarda","Raspagem","Costas","Revisão"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-07-06-guarda-fechada-armlock",dateISO:"2026-07-06",dateLabel:"06/07/2026",title:"Guarda fechada — passagem colada e armlock",summary:"Passagem com referência na faixa, armlock da guarda fechada e treino específico com objetivos diferentes para top e bottom.",tags:["Guarda fechada","Passagem","Armlock","Condicionado"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-07-03-cem-quilos-knee-on-belly",dateISO:"2026-07-03",dateLabel:"03/07/2026",title:"Cem quilos — estrangulamento, troca de lado e joelho na barriga",summary:"Crossface, underhook, estrangulamento no side control, troca de lado e progressão para knee on belly.",tags:["Cem quilos","Side control","Finalização","Knee on belly"],level:"Iniciante",videoUrl:"",thumbnail:""},
+        {id:"2026-07-01-guarda-fechada-quedas",dateISO:"2026-07-01",dateLabel:"01/07/2026",title:"Guarda fechada — abertura e sequência de quedas",summary:"Abertura usando alavanca, seguida de De-ashi-barai, Uchi-mata e variação de O-uchi-gari.",tags:["Guarda fechada","Passagem","Quedas","Drill"],level:"Turma mista",videoUrl:"",thumbnail:""},
+        {id:"2026-06-23-29-leg-drag",dateISO:"2026-06-29",dateLabel:"Semana 23–29/06/2026",title:"Guarda-aranha — leg drag e estabilização no cem quilos",summary:"Retirada de pegada, deslocamento lateral, leg drag, estabilização e integração com alunos de outros horários.",tags:["Guarda-aranha","Leg drag","Passagem","Cem quilos"],level:"Registro consolidado",videoUrl:"",thumbnail:""}
       ];
 
-      const state = { activeTag: "Todas", search: "" };
-      const planner = document.getElementById("weeklyPlanner");
-      const plannerFallback = document.getElementById("plannerFallback");
-      const plannerLabel = document.getElementById("plannerLabel");
-      const tagFilters = document.getElementById("tagFilters");
-      const lessonGrid = document.getElementById("lessonGrid");
-      const lessonSearch = document.getElementById("lessonSearch");
-      const resultsLine = document.getElementById("resultsLine");
-      const emptyState = document.getElementById("emptyState");
-      const videoModal = document.getElementById("videoModal");
-      const modalTitle = document.getElementById("modalTitle");
-      const modalVideo = document.getElementById("modalVideo");
-      const modalClose = document.getElementById("modalClose");
+      const state={activeTag:"Todas",search:"",tagsExpanded:false};
+      const planner=document.getElementById("weeklyPlanner");
+      const plannerFallback=document.getElementById("plannerFallback");
+      const plannerLabel=document.getElementById("plannerLabel");
+      const tagFilters=document.getElementById("tagFilters");
+      const tagsToggle=document.getElementById("tagsToggle");
+      const lessonGrid=document.getElementById("lessonGrid");
+      const lessonSearch=document.getElementById("lessonSearch");
+      const resultsLine=document.getElementById("resultsLine");
+      const emptyState=document.getElementById("emptyState");
+      const videoModal=document.getElementById("videoModal");
+      const modalTitle=document.getElementById("modalTitle");
+      const modalVideo=document.getElementById("modalVideo");
+      const modalClose=document.getElementById("modalClose");
 
-      function normalizeText(value) {
-        return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
-      }
+      function normalizeText(value){return String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim()}
+      function escapeHTML(value){return String(value||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
 
-      function escapeHTML(value) {
-        return String(value || "")
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#039;");
-      }
-
-      function getYouTubeEmbedUrl(url) {
-        if (!url) return "";
-        try {
-          const parsed = new URL(url);
-          let id = "";
-          if (parsed.hostname.includes("youtu.be")) id = parsed.pathname.split("/").filter(Boolean)[0] || "";
-          if (parsed.hostname.includes("youtube.com")) {
-            if (parsed.pathname === "/watch") id = parsed.searchParams.get("v") || "";
-            if (parsed.pathname.startsWith("/embed/")) id = parsed.pathname.split("/")[2] || "";
-            if (parsed.pathname.startsWith("/shorts/")) id = parsed.pathname.split("/")[2] || "";
+      function getYouTubeEmbedUrl(url){
+        if(!url)return"";
+        try{
+          const parsed=new URL(url);let id="";
+          if(parsed.hostname.includes("youtu.be"))id=parsed.pathname.split("/").filter(Boolean)[0]||"";
+          if(parsed.hostname.includes("youtube.com")){
+            if(parsed.pathname==="/watch")id=parsed.searchParams.get("v")||"";
+            if(parsed.pathname.startsWith("/embed/"))id=parsed.pathname.split("/")[2]||"";
+            if(parsed.pathname.startsWith("/shorts/"))id=parsed.pathname.split("/")[2]||"";
           }
-          return id ? "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0" : "";
-        } catch (error) {
-          return "";
-        }
+          return id?"https://www.youtube-nocookie.com/embed/"+encodeURIComponent(id)+"?autoplay=1&rel=0":"";
+        }catch(error){return""}
       }
 
-      function configurePlanner() {
-        plannerLabel.textContent = APP_CONFIG.weeklyPlannerLabel;
-        planner.alt = APP_CONFIG.weeklyPlannerAlt;
-        planner.src = APP_CONFIG.weeklyPlannerImage;
-        planner.addEventListener("load", function () {
-          planner.style.display = "block";
-          plannerFallback.style.display = "none";
-        });
-        planner.addEventListener("error", function () {
-          planner.style.display = "none";
-          plannerFallback.style.display = "block";
-        });
+      function configurePlanner(){
+        plannerLabel.textContent=APP_CONFIG.weeklyPlannerLabel;
+        planner.alt=APP_CONFIG.weeklyPlannerAlt;
+        planner.src=APP_CONFIG.weeklyPlannerImage;
+        planner.addEventListener("load",function(){planner.style.display="block";plannerFallback.style.display="none"});
+        planner.addEventListener("error",function(){planner.style.display="none";plannerFallback.style.display="block"});
       }
 
-      function getAllTags() {
-        const tags = new Set();
-        LESSONS.forEach(function (lesson) {
-          lesson.tags.forEach(function (tag) { tags.add(tag); });
-        });
-        return ["Todas"].concat(Array.from(tags).sort(function (a, b) { return a.localeCompare(b, "pt-BR"); }));
+      function getAllTags(){
+        const tags=new Set();
+        LESSONS.forEach(function(lesson){lesson.tags.forEach(function(tag){tags.add(tag)})});
+        return["Todas"].concat(Array.from(tags).sort(function(a,b){return a.localeCompare(b,"pt-BR")}));
       }
 
-      function renderTagFilters() {
-        tagFilters.innerHTML = getAllTags().map(function (tag) {
-          const active = state.activeTag === tag ? " active" : "";
-          return '<button class="filter-btn' + active + '" type="button" data-tag="' + escapeHTML(tag) + '">' + escapeHTML(tag) + '</button>';
+      function updateTagsToggle(){
+        const needsToggle=tagFilters.scrollHeight>tagFilters.clientHeight+4||state.tagsExpanded;
+        tagsToggle.hidden=!needsToggle;
+        tagsToggle.setAttribute("aria-expanded",String(state.tagsExpanded));
+        tagsToggle.textContent=state.tagsExpanded?"Mostrar menos tags":"Ver todas as tags";
+      }
+
+      function renderTagFilters(){
+        tagFilters.innerHTML=getAllTags().map(function(tag){
+          const active=state.activeTag===tag?" active":"";
+          return'<button class="filter-btn'+active+'" type="button" data-tag="'+escapeHTML(tag)+'">'+escapeHTML(tag)+'</button>';
         }).join("");
+        tagFilters.classList.toggle("expanded",state.tagsExpanded);
+        tagFilters.querySelectorAll("[data-tag]").forEach(function(button){
+          button.addEventListener("click",function(){state.activeTag=button.dataset.tag;renderTagFilters();renderLessons()});
+        });
+        requestAnimationFrame(updateTagsToggle);
+      }
 
-        tagFilters.querySelectorAll("[data-tag]").forEach(function (button) {
-          button.addEventListener("click", function () {
-            state.activeTag = button.dataset.tag;
-            renderTagFilters();
-            renderLessons();
-          });
+      function getFilteredLessons(){
+        const term=normalizeText(state.search);
+        return LESSONS.slice().sort(function(a,b){return b.dateISO.localeCompare(a.dateISO)}).filter(function(lesson){
+          const matchesTag=state.activeTag==="Todas"||lesson.tags.includes(state.activeTag);
+          const searchable=normalizeText([lesson.title,lesson.summary,lesson.dateLabel,lesson.level,lesson.tags.join(" ")].join(" "));
+          return matchesTag&&(!term||searchable.includes(term));
         });
       }
 
-      function getFilteredLessons() {
-        const term = normalizeText(state.search);
-        return LESSONS.slice()
-          .sort(function (a, b) { return b.dateISO.localeCompare(a.dateISO); })
-          .filter(function (lesson) {
-            const matchesTag = state.activeTag === "Todas" || lesson.tags.includes(state.activeTag);
-            const searchable = normalizeText([
-              lesson.title,
-              lesson.summary,
-              lesson.dateLabel,
-              lesson.level,
-              lesson.tags.join(" ")
-            ].join(" "));
-            return matchesTag && (!term || searchable.includes(term));
-          });
+      function lessonCard(lesson){
+        const hasVideo=Boolean(lesson.videoUrl);
+        const tags=lesson.tags.map(function(tag){return'<span class="lesson-tag">'+escapeHTML(tag)+'</span>'}).join("");
+        const cover=lesson.thumbnail?'<img src="'+escapeHTML(lesson.thumbnail)+'" alt="Capa da aula '+escapeHTML(lesson.title)+'" loading="lazy">':'<div class="cover-placeholder"><span>Aula registrada</span><p class="cover-summary">'+escapeHTML(lesson.summary)+'</p></div>';
+        const action=hasVideo?'<button class="watch-btn" type="button" data-video="'+escapeHTML(lesson.videoUrl)+'" data-title="'+escapeHTML(lesson.title)+'">Assistir</button>':'<button class="watch-btn" type="button" disabled>Vídeo em breve</button>';
+        return'<article class="lesson-card"><div class="lesson-cover">'+cover+'<span class="video-badge'+(hasVideo?' ready':'')+'">'+(hasVideo?'Disponível':'A gravar')+'</span></div><div class="lesson-body"><div class="lesson-date">'+escapeHTML(lesson.dateLabel)+'</div><h3 class="lesson-title">'+escapeHTML(lesson.title)+'</h3><div class="lesson-tags">'+tags+'</div><div class="lesson-actions">'+action+'<span class="lesson-level">'+escapeHTML(lesson.level)+'</span></div></div></article>';
       }
 
-      function lessonCard(lesson) {
-        const hasVideo = Boolean(lesson.videoUrl);
-        const tags = lesson.tags.map(function (tag) {
-          return '<span class="lesson-tag">' + escapeHTML(tag) + '</span>';
-        }).join("");
-
-        const cover = lesson.thumbnail
-          ? '<img src="' + escapeHTML(lesson.thumbnail) + '" alt="Capa da aula ' + escapeHTML(lesson.title) + '" loading="lazy">'
-          : '<div class="cover-placeholder"><span>Aula registrada</span><p class="cover-summary">' + escapeHTML(lesson.summary) + '</p></div>';
-
-        const action = hasVideo
-          ? '<button class="watch-btn" type="button" data-video="' + escapeHTML(lesson.videoUrl) + '" data-title="' + escapeHTML(lesson.title) + '">Assistir</button>'
-          : '<button class="watch-btn" type="button" disabled>Vídeo em breve</button>';
-
-        return '<article class="lesson-card">' +
-          '<div class="lesson-cover">' + cover +
-            '<span class="video-badge' + (hasVideo ? ' ready' : '') + '">' + (hasVideo ? 'Disponível' : 'A gravar') + '</span>' +
-          '</div>' +
-          '<div class="lesson-body">' +
-            '<div class="lesson-date">' + escapeHTML(lesson.dateLabel) + '</div>' +
-            '<h3 class="lesson-title">' + escapeHTML(lesson.title) + '</h3>' +
-            '<div class="lesson-tags">' + tags + '</div>' +
-            '<div class="lesson-actions">' + action + '<span class="lesson-level">' + escapeHTML(lesson.level) + '</span></div>' +
-          '</div>' +
-        '</article>';
+      function renderLessons(){
+        const lessons=getFilteredLessons();
+        lessonGrid.innerHTML=lessons.map(lessonCard).join("");
+        emptyState.style.display=lessons.length?"none":"block";
+        resultsLine.textContent=lessons.length===1?"1 aula encontrada":lessons.length+" aulas encontradas";
+        lessonGrid.querySelectorAll("[data-video]").forEach(function(button){button.addEventListener("click",function(){openVideo(button.dataset.video,button.dataset.title)})});
       }
 
-      function renderLessons() {
-        const lessons = getFilteredLessons();
-        lessonGrid.innerHTML = lessons.map(lessonCard).join("");
-        emptyState.style.display = lessons.length ? "none" : "block";
-        resultsLine.textContent = lessons.length === 1 ? "1 aula encontrada" : lessons.length + " aulas encontradas";
-
-        lessonGrid.querySelectorAll("[data-video]").forEach(function (button) {
-          button.addEventListener("click", function () {
-            openVideo(button.dataset.video, button.dataset.title);
-          });
-        });
+      function openVideo(url,title){
+        const embedUrl=getYouTubeEmbedUrl(url);
+        if(!embedUrl){window.open(url,"_blank","noopener,noreferrer");return}
+        modalTitle.textContent=title;
+        modalVideo.innerHTML='<iframe src="'+embedUrl+'" title="'+escapeHTML(title)+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+        videoModal.classList.add("open");document.body.style.overflow="hidden";modalClose.focus();
       }
+      function closeVideo(){videoModal.classList.remove("open");modalVideo.innerHTML="";document.body.style.overflow=""}
 
-      function openVideo(url, title) {
-        const embedUrl = getYouTubeEmbedUrl(url);
-        if (!embedUrl) {
-          window.open(url, "_blank", "noopener,noreferrer");
-          return;
-        }
-        modalTitle.textContent = title;
-        modalVideo.innerHTML = '<iframe src="' + embedUrl + '" title="' + escapeHTML(title) + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
-        videoModal.classList.add("open");
-        document.body.style.overflow = "hidden";
-        modalClose.focus();
-      }
+      lessonSearch.addEventListener("input",function(){state.search=lessonSearch.value;renderLessons()});
+      tagsToggle.addEventListener("click",function(){state.tagsExpanded=!state.tagsExpanded;renderTagFilters()});
+      modalClose.addEventListener("click",closeVideo);
+      videoModal.addEventListener("click",function(event){if(event.target===videoModal)closeVideo()});
+      document.addEventListener("keydown",function(event){if(event.key==="Escape"&&videoModal.classList.contains("open"))closeVideo()});
+      document.getElementById("logout").addEventListener("click",function(){sessionStorage.clear();window.location.href="index.html"});
 
-      function closeVideo() {
-        videoModal.classList.remove("open");
-        modalVideo.innerHTML = "";
-        document.body.style.overflow = "";
-      }
-
-      lessonSearch.addEventListener("input", function () {
-        state.search = lessonSearch.value;
-        renderLessons();
+      const archiveToggle=document.getElementById("archiveToggle");
+      const archivePanel=document.getElementById("archivePanel");
+      archiveToggle.addEventListener("click",function(){
+        const willOpen=archivePanel.hasAttribute("hidden");
+        if(willOpen)archivePanel.removeAttribute("hidden");else archivePanel.setAttribute("hidden","");
+        archiveToggle.setAttribute("aria-expanded",String(willOpen));
+        archiveToggle.querySelector(".archive-toggle__label").textContent=willOpen?"Ocultar aulas anteriores":"Ver aulas anteriores";
+        if(willOpen)requestAnimationFrame(updateTagsToggle);
       });
 
-      modalClose.addEventListener("click", closeVideo);
-      videoModal.addEventListener("click", function (event) {
-        if (event.target === videoModal) closeVideo();
-      });
-      document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape" && videoModal.classList.contains("open")) closeVideo();
-      });
-
-      document.getElementById("logout").addEventListener("click", function () {
-        sessionStorage.clear();
-        window.location.href = "index.html";
-      });
-
-      /* Recolher/expandir a seção de aulas anteriores */
-      const archiveToggle = document.getElementById("archiveToggle");
-      const archivePanel = document.getElementById("archivePanel");
-      if (archiveToggle && archivePanel) {
-        archiveToggle.addEventListener("click", function () {
-          const willOpen = archivePanel.hasAttribute("hidden");
-          if (willOpen) {
-            archivePanel.removeAttribute("hidden");
-          } else {
-            archivePanel.setAttribute("hidden", "");
-          }
-          archiveToggle.setAttribute("aria-expanded", String(willOpen));
-          const label = archiveToggle.querySelector(".archive-toggle__label");
-          if (label) label.textContent = willOpen ? "Ocultar aulas anteriores" : "Ver aulas anteriores";
-        });
-      }
-
+      window.addEventListener("resize",function(){if(!state.tagsExpanded)requestAnimationFrame(updateTagsToggle)});
       configurePlanner();
       renderTagFilters();
       renderLessons();
