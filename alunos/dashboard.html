@@ -90,7 +90,9 @@
     .planner-meta strong{font-size:.92rem;font-weight:900}
     .planner-meta span{color:var(--muted);font-size:.78rem;font-weight:800}
     .planner-image-wrap{min-height:230px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(10,143,111,.09),transparent 58%),var(--paper-3)}
-    .planner-image{display:block;width:100%;height:auto;max-height:680px;object-fit:contain}
+    .planner-image-button{display:block;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in}
+    .planner-image-button:hover .planner-image{filter:brightness(.97)}
+    .planner-image{display:block;width:100%;height:auto;max-height:680px;object-fit:contain;transition:filter .2s ease}
     .planner-fallback{display:none;max-width:520px;padding:42px 24px;text-align:center;color:var(--muted)}
     .planner-fallback strong{display:block;margin-bottom:7px;color:var(--ink);font-size:1.05rem;font-weight:900}
 
@@ -137,14 +139,17 @@
     .lesson-level{color:var(--muted);font-size:.68rem;font-weight:900;text-align:right}
     .empty-state{display:none;padding:36px 22px;border:1px dashed var(--line-strong);border-radius:16px;text-align:center;color:var(--muted)}
 
-    .video-modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(30,29,21,.78);backdrop-filter:blur(7px)}
-    .video-modal.open{display:flex}
+    .video-modal,.planner-modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(30,29,21,.82);backdrop-filter:blur(7px)}
+    .video-modal.open,.planner-modal.open{display:flex}
     .modal-dialog{width:min(960px,100%);overflow:hidden;border-radius:17px;background:var(--paper-2);box-shadow:0 30px 80px rgba(0,0,0,.38)}
     .modal-header{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 16px;border-bottom:1px solid var(--line)}
     .modal-title{margin:0;font-size:.94rem;font-weight:600}
     .modal-close{width:36px;height:36px;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink);font-size:1.15rem;font-weight:900;cursor:pointer}
     .modal-video{aspect-ratio:16/9;background:#191913}
     .modal-video iframe{width:100%;height:100%;border:0}
+    .planner-modal__dialog{position:relative;width:min(1180px,100%);max-height:calc(100vh - 40px);display:flex;align-items:center;justify-content:center}
+    .planner-modal__image{display:block;max-width:100%;max-height:calc(100vh - 40px);width:auto;height:auto;border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.38);background:var(--paper-2)}
+    .planner-modal__close{position:absolute;top:12px;right:12px;width:42px;height:42px;border:1px solid rgba(255,255,255,.35);border-radius:50%;background:rgba(23,21,18,.78);color:#fff;font-size:1.45rem;font-weight:900;cursor:pointer;z-index:2}
 
     footer.belt-foot{display:flex;padding:0;margin-top:34px;text-align:left;background:var(--dark);font-weight:800;font-size:.9rem}
     .belt-foot__main{flex:1;display:flex;align-items:center;padding:clamp(26px,4vw,40px) 20px;color:rgba(226,223,200,.82)}
@@ -209,7 +214,9 @@
           <span>Atualizado pelo professor</span>
         </div>
         <div class="planner-image-wrap">
-          <img class="planner-image" id="weeklyPlanner" alt="" />
+          <button class="planner-image-button" id="plannerImageButton" type="button" aria-label="Ampliar cronograma da semana">
+            <img class="planner-image" id="weeklyPlanner" alt="" />
+          </button>
           <div class="planner-fallback" id="plannerFallback">
             <strong>Cronograma em atualização</strong>
             A nova imagem da semana será publicada aqui.
@@ -262,6 +269,13 @@
     </div>
   </div>
 
+  <div class="planner-modal" id="plannerModal" role="dialog" aria-modal="true" aria-label="Cronograma da semana ampliado">
+    <div class="planner-modal__dialog">
+      <button class="planner-modal__close" id="plannerModalClose" type="button" aria-label="Fechar cronograma ampliado">×</button>
+      <img class="planner-modal__image" id="plannerModalImage" alt="" />
+    </div>
+  </div>
+
   <script>
     (function(){
       "use strict";
@@ -301,8 +315,12 @@
 
       const state={activeTag:"Todas",search:"",tagsExpanded:false};
       const planner=document.getElementById("weeklyPlanner");
+      const plannerImageButton=document.getElementById("plannerImageButton");
       const plannerFallback=document.getElementById("plannerFallback");
       const plannerLabel=document.getElementById("plannerLabel");
+      const plannerModal=document.getElementById("plannerModal");
+      const plannerModalImage=document.getElementById("plannerModalImage");
+      const plannerModalClose=document.getElementById("plannerModalClose");
       const tagFilters=document.getElementById("tagFilters");
       const tagsToggle=document.getElementById("tagsToggle");
       const lessonGrid=document.getElementById("lessonGrid");
@@ -335,8 +353,27 @@
         plannerLabel.textContent=APP_CONFIG.weeklyPlannerLabel;
         planner.alt=APP_CONFIG.weeklyPlannerAlt;
         planner.src=APP_CONFIG.weeklyPlannerImage;
-        planner.addEventListener("load",function(){planner.style.display="block";plannerFallback.style.display="none"});
-        planner.addEventListener("error",function(){planner.style.display="none";plannerFallback.style.display="block"});
+        planner.addEventListener("load",function(){
+          plannerImageButton.style.display="block";
+          plannerFallback.style.display="none";
+        });
+        planner.addEventListener("error",function(){
+          plannerImageButton.style.display="none";
+          plannerFallback.style.display="block";
+        });
+      }
+
+      function openPlanner(){
+        if(!planner.src)return;
+        plannerModalImage.src=planner.src;
+        plannerModalImage.alt=planner.alt;
+        plannerModal.classList.add("open");
+        document.body.style.overflow="hidden";
+        plannerModalClose.focus();
+      }
+      function closePlanner(){
+        plannerModal.classList.remove("open");
+        document.body.style.overflow="";
       }
 
       function getAllTags(){
@@ -346,7 +383,8 @@
       }
 
       function updateTagsToggle(){
-        const needsToggle=tagFilters.scrollHeight>tagFilters.clientHeight+4||state.tagsExpanded;
+        const collapsedHeight=window.innerWidth<=620?100:82;
+        const needsToggle=tagFilters.scrollHeight>collapsedHeight+4;
         tagsToggle.hidden=!needsToggle;
         tagsToggle.setAttribute("aria-expanded",String(state.tagsExpanded));
         tagsToggle.textContent=state.tagsExpanded?"Mostrar menos tags":"Ver todas as tags";
@@ -400,9 +438,16 @@
 
       lessonSearch.addEventListener("input",function(){state.search=lessonSearch.value;renderLessons()});
       tagsToggle.addEventListener("click",function(){state.tagsExpanded=!state.tagsExpanded;renderTagFilters()});
+      plannerImageButton.addEventListener("click",openPlanner);
+      plannerModalClose.addEventListener("click",closePlanner);
+      plannerModal.addEventListener("click",function(event){if(event.target===plannerModal)closePlanner()});
       modalClose.addEventListener("click",closeVideo);
       videoModal.addEventListener("click",function(event){if(event.target===videoModal)closeVideo()});
-      document.addEventListener("keydown",function(event){if(event.key==="Escape"&&videoModal.classList.contains("open"))closeVideo()});
+      document.addEventListener("keydown",function(event){
+        if(event.key!=="Escape")return;
+        if(plannerModal.classList.contains("open")){closePlanner();return}
+        if(videoModal.classList.contains("open"))closeVideo();
+      });
       document.getElementById("logout").addEventListener("click",function(){sessionStorage.clear();window.location.href="index.html"});
 
       const archiveToggle=document.getElementById("archiveToggle");
@@ -415,7 +460,7 @@
         if(willOpen)requestAnimationFrame(updateTagsToggle);
       });
 
-      window.addEventListener("resize",function(){if(!state.tagsExpanded)requestAnimationFrame(updateTagsToggle)});
+      window.addEventListener("resize",function(){requestAnimationFrame(updateTagsToggle)});
       configurePlanner();
       renderTagFilters();
       renderLessons();
