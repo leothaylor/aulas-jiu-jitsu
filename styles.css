@@ -137,10 +137,15 @@ em{font-style:italic; color:var(--teal-deep)}
 
 /* ---------- Marquee ---------- */
 .marquee{background:var(--dark); color:var(--paper); overflow:hidden; padding:.9rem 0; border-block:1px solid rgba(255,255,255,.06)}
-.marquee__track{display:inline-flex; gap:1.4rem; white-space:nowrap; will-change:transform; animation:marq 26s linear infinite}
-.marquee__track span{font-family:var(--display); font-weight:500; font-size:1.15rem; letter-spacing:.02em}
-.marquee__track i{color:var(--teal-bright); font-style:normal}
-@keyframes marq{to{transform:translateX(-33.33%)}}
+.marquee__track{
+  display:flex; width:max-content; white-space:nowrap; will-change:transform;
+  transform:translate3d(0,0,0); animation:marq 26s linear infinite; animation-play-state:paused;
+}
+.marquee__track.is-running{animation-play-state:running}
+.marquee__group{display:flex; align-items:center; gap:1.4rem; padding-right:1.4rem}
+.marquee__group span{font-family:var(--display); font-weight:500; font-size:1.15rem; letter-spacing:.02em}
+.marquee__group i{color:var(--teal-bright); font-style:normal}
+@keyframes marq{to{transform:translate3d(-50%,0,0)}}
 
 /* ============================================================
    Cenas genéricas
@@ -151,19 +156,38 @@ em{font-style:italic; color:var(--teal-deep)}
 .scene__lead{font-size:clamp(1.05rem,1.6vw,1.3rem); color:var(--ink-2); max-width:52ch}
 .scene p{max-width:56ch}
 
-/* Cena 2 — split */
+/* Cena split — trajetória */
 .scene--split{display:grid; grid-template-columns:1fr 1fr; gap:clamp(2rem,5vw,5rem); align-items:center; padding-block:clamp(56px,8vh,110px)}
 .scene__figure{margin:0; position:relative; border-radius:var(--r); overflow:hidden; aspect-ratio:828/1523}
 .scene__figure img{width:100%; height:100%; object-fit:cover; object-position:50% 50%}
 .scene__figure figcaption{position:absolute; left:16px; bottom:14px; color:#fff; font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; background:rgba(23,21,18,.5); padding:.4em .8em; border-radius:99px; backdrop-filter:blur(4px)}
 
-/* Cena 3 — método */
+/* Cena método */
 .steps{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(1rem,2vw,1.6rem); counter-reset:s}
-.step{background:var(--paper-2); border:1px solid var(--line-soft); border-radius:var(--r); padding:1.6rem 1.4rem; transition:transform .4s var(--ease), background .4s}
-.step:hover{transform:translateY(-4px); background:var(--paper-3)}
-.step__n{font-family:var(--display); font-weight:600; font-size:1.4rem; color:var(--teal); display:block}
-.step h3{margin:.7rem 0 .4rem; font-size:1.15rem; color:var(--ink)}
-.step p{margin:0; font-size:.95rem; color:var(--ink-2)}
+.step{
+  background:var(--paper-2); border:1px solid var(--line-soft); border-radius:var(--r); padding:1.6rem 1.4rem;
+  transition:transform .4s var(--ease), background .4s var(--ease), border-color .4s var(--ease), box-shadow .4s var(--ease);
+}
+.step__n{font-family:var(--display); font-weight:600; font-size:1.4rem; color:var(--teal); display:block; transition:color .4s var(--ease)}
+.step h3{margin:.7rem 0 .4rem; font-size:1.15rem; color:var(--ink); transition:color .4s var(--ease)}
+.step p{margin:0; font-size:.95rem; color:var(--ink-2); transition:color .4s var(--ease)}
+
+@media (hover:hover) and (pointer:fine){
+  .step:hover{
+    transform:translateY(-4px); background:var(--teal-deep); border-color:transparent;
+    box-shadow:0 16px 36px rgba(7,106,83,.2);
+  }
+  .step:hover .step__n{color:var(--teal-bright)}
+  .step:hover h3{color:#fff}
+  .step:hover p{color:rgba(255,255,255,.84)}
+}
+
+@media (hover:none){
+  .step:active{background:var(--teal-deep); border-color:transparent; transform:scale(.99)}
+  .step:active .step__n{color:var(--teal-bright)}
+  .step:active h3{color:#fff}
+  .step:active p{color:rgba(255,255,255,.84)}
+}
 
 /* Citação */
 .quote{background:var(--dark); color:var(--paper); text-align:center; padding:clamp(70px,13vh,160px) var(--pad)}
@@ -171,17 +195,37 @@ em{font-style:italic; color:var(--teal-deep)}
 .quote blockquote{font-family:var(--display); font-weight:400; font-size:clamp(1.7rem,4.6vw,3.4rem); line-height:1.18; letter-spacing:-.02em; max-width:20ch; margin:0 auto; color:#f0ead2}
 .quote blockquote em{color:var(--sage)}
 
-/* Cena 4 — cards */
+/* Cena primeira aula — cards */
 .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(1rem,2.4vw,1.8rem)}
-.card{background:var(--paper-2); border:1px solid var(--line-soft); border-radius:var(--r); overflow:hidden; transition:transform .4s var(--ease)}
-.card:hover{transform:translateY(-5px)}
+.card{
+  background:var(--paper-2); border:1px solid var(--line-soft); border-radius:var(--r); overflow:hidden;
+  transition:transform .4s var(--ease), background .4s var(--ease), border-color .4s var(--ease), box-shadow .4s var(--ease);
+}
 .card__media{aspect-ratio:4/3; overflow:hidden}
 .card__media img{width:100%; height:100%; object-fit:cover; transition:transform .6s var(--ease)}
-.card:hover .card__media img{transform:scale(1.05)}
-.card__tag{margin:1.1rem 1.3rem .1rem; font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; color:var(--red)}
-.card h3{margin:.1rem 1.3rem .4rem; font-family:var(--display); font-weight:600; font-size:1.4rem; color:var(--ink)}
-.card p{margin:0 1.3rem 1.4rem; font-size:.95rem; color:var(--ink-2)}
+.card__tag{margin:1.1rem 1.3rem .1rem; font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; color:var(--red); transition:color .4s var(--ease)}
+.card h3{margin:.1rem 1.3rem .4rem; font-family:var(--display); font-weight:600; font-size:1.4rem; color:var(--ink); transition:color .4s var(--ease)}
+.card p{margin:0 1.3rem 1.4rem; font-size:.95rem; color:var(--ink-2); transition:color .4s var(--ease)}
 .scene__cta{margin-top:clamp(2rem,4vw,3rem); text-align:center}
+
+@media (hover:hover) and (pointer:fine){
+  .card:hover{
+    transform:translateY(-5px); background:var(--teal-deep); border-color:transparent;
+    box-shadow:0 18px 40px rgba(7,106,83,.2);
+  }
+  .card:hover .card__media img{transform:scale(1.05)}
+  .card:hover .card__tag{color:var(--teal-bright)}
+  .card:hover h3{color:#fff}
+  .card:hover > p:not(.card__tag){color:rgba(255,255,255,.84)}
+}
+
+@media (hover:none){
+  .card:active{background:var(--teal-deep); border-color:transparent; transform:scale(.995)}
+  .card:active .card__media img{transform:scale(1.03)}
+  .card:active .card__tag{color:var(--teal-bright)}
+  .card:active h3{color:#fff}
+  .card:active > p:not(.card__tag){color:rgba(255,255,255,.84)}
+}
 
 /* Cena 5 — galeria horizontal */
 .scene--moments{max-width:none; padding-inline:0}
@@ -218,7 +262,11 @@ em{font-style:italic; color:var(--teal-deep)}
 .place__addr{font-style:normal; color:var(--ink-2); margin:1.4rem 0 1.8rem; line-height:1.8}
 .place__addr strong{color:var(--ink)}
 .place__actions{display:flex; gap:.9rem; flex-wrap:wrap}
-.place__map{border-radius:var(--r); overflow:hidden; border:1px solid var(--line); aspect-ratio:4/3}
+.place__visuals{display:grid; gap:1rem}
+.place__photo,.place__map{border-radius:var(--r); overflow:hidden; border:1px solid var(--line)}
+.place__photo{aspect-ratio:16/9}
+.place__photo img{width:100%; height:100%; object-fit:cover}
+.place__map{aspect-ratio:4/3}
 .place__map iframe{width:100%; height:100%; border:0; filter:grayscale(.2) sepia(.12)}
 
 /* ============================================================
@@ -287,6 +335,12 @@ em{font-style:italic; color:var(--teal-deep)}
 .lightbox__nav--prev{left:16px}
 .lightbox__nav--next{right:16px}
 .card__media img{cursor:zoom-in}
+
+@media (max-width:1180px) and (min-width:721px){
+  .nav{gap:1rem}
+  .nav__links{gap:1rem; font-size:.84rem}
+  .nav__cta{font-size:.82rem; padding:.55em 1em}
+}
 
 @media (max-width:720px){
   .gallery-nav{display:none}   /* mobile usa swipe nativo */
