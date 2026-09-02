@@ -75,6 +75,8 @@ em{font-style:italic; color:var(--teal-deep)}
 .btn--xl{font-size:clamp(1rem,2.4vw,1.35rem); padding:1.1em 2em}
 .btn--ghost{--bg:transparent; --fg:var(--ink); border-color:var(--line); box-shadow:none}
 .btn--ghost:hover{--bg:var(--paper-3)}
+.btn--testimonials{--bg:var(--teal-bright);--fg:var(--dark);box-shadow:none}
+.btn--testimonials:hover{--bg:#66ddb9}
 
 /* ============================================================
    NAV
@@ -236,6 +238,22 @@ em{font-style:italic; color:var(--teal-deep)}
   .card:active > p:not(.card__tag){color:rgba(255,255,255,.84)}
 }
 
+/* Relatos dos alunos — prova social editorial */
+.testimonials{background:var(--dark);color:var(--paper);padding:clamp(72px,11vh,138px) 0;border-block:1px solid rgba(255,255,255,.06)}
+.testimonials__inner{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
+.testimonials__head{max-width:720px;margin-bottom:clamp(2.2rem,5vw,4rem)}
+.testimonials__title{font-family:var(--display);font-weight:600;font-size:clamp(2.2rem,6vw,4.6rem);line-height:1.02;letter-spacing:-.025em;color:#f0ead2;margin:0 0 .5em}
+.testimonials__title em{color:var(--sage)}
+.testimonials__lead{max-width:58ch;margin:0;color:rgba(240,234,210,.7);font-size:clamp(1rem,1.45vw,1.18rem)}
+.testimonials__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(1rem,2vw,1.4rem)}
+.testimonial-card{min-height:240px;border:1px solid rgba(240,234,210,.14);border-radius:var(--r);background:rgba(255,255,255,.035);padding:clamp(1.35rem,2.2vw,1.8rem);display:flex;flex-direction:column;justify-content:flex-start;box-shadow:0 18px 40px rgba(0,0,0,.08)}
+.testimonial-card__quote{font-family:Georgia,"Times New Roman",serif;font-size:3.4rem;line-height:.8;color:var(--teal-bright);opacity:.82;margin-bottom:1.25rem}
+.testimonial-card__placeholder{margin:0;color:rgba(240,234,210,.48);font-style:italic;max-width:24ch}
+.testimonial-card--empty{border-style:dashed;background:rgba(255,255,255,.022)}
+.testimonials__cta{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;margin-top:clamp(2rem,4vw,3rem);padding-top:clamp(1.6rem,3vw,2.2rem);border-top:1px solid rgba(240,234,210,.12)}
+.testimonials__cta p{margin:0;color:rgba(240,234,210,.72);max-width:44ch}
+.testimonials__cta strong{color:#f0ead2}
+
 /* Cena 5 — galeria horizontal */
 .scene--moments{max-width:none; padding-inline:0; overflow-x:hidden}
 @supports (overflow:clip){.scene--moments{overflow-x:clip}}
@@ -363,6 +381,7 @@ em{font-style:italic; color:var(--teal-deep)}
   .scene--split,.scene--place{grid-template-columns:1fr}
   .steps{grid-template-columns:repeat(2,1fr)}
   .cards{grid-template-columns:1fr}
+  .testimonials__grid{grid-template-columns:1fr}
 }
 @media (max-width:720px){
   .nav__links{
@@ -381,6 +400,11 @@ em{font-style:italic; color:var(--teal-deep)}
   .hero__scroll{display:none}
   .wa-fab{display:flex}
   .foot__base{justify-content:center; text-align:center}
+  .testimonials__grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:1rem;padding-bottom:.35rem;margin-right:calc(var(--pad) * -1);padding-right:var(--pad);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .testimonials__grid::-webkit-scrollbar{display:none}
+  .testimonial-card{flex:0 0 min(84vw,340px);scroll-snap-align:start;min-height:220px}
+  .testimonials__cta{align-items:flex-start;flex-direction:column}
+  .testimonials__cta .btn{width:100%}
 }
 
 @media (prefers-reduced-motion:reduce){
