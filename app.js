@@ -119,6 +119,177 @@
     update();
   }
 
+  /* ---------- Relatos dos alunos: todos, intactos e em rotação ---------- */
+  const testimonials = $("#relatos .testimonials__grid");
+  if (testimonials) {
+    const relatos = [
+      {
+        nome: "Jussan Silva",
+        meta: "Faixa branca · 10 Meses",
+        texto: "Muito satisfatória, o mestre é muito paciente e técnico, explica muito bem as posições e suas aplicações nos treinos. As aulas são leves e muito ricas em conhecimento."
+      },
+      {
+        nome: "Fabiano da Silva correa",
+        meta: "Faixa azul · 2 anos",
+        texto: "Sensacional demais 👏🏿 uma coisa que mais me impressiona em vc, é que ouve a opinião de TDS e se coloca a disposição de  tentar o que os menos graduados querem experimentar. Oss"
+      },
+      {
+        nome: "Daniel",
+        meta: "Faixa azul · 3 anos",
+        texto: "Muito aprendizado, fácil de entender "
+      },
+      {
+        nome: "Allan",
+        meta: "Faixa roxa · 6",
+        texto: "Fácil entendimento e compressão dos conceitos . "
+      },
+      {
+        nome: "Rafaela",
+        meta: "Faixa branca · Só fiz algumas aulas esporádicas",
+        texto: "Sempre que eu fui foi ótimo "
+      },
+      {
+        nome: "Charles",
+        meta: "Faixa branca · Já treinei a mais de dois anos",
+        texto: "Excelente "
+      }
+    ];
+
+    const style = document.createElement("style");
+    style.textContent = `
+      #relatos .testimonials__grid{
+        display:flex;
+        gap:clamp(1rem,2vw,1.4rem);
+        overflow-x:auto;
+        scroll-snap-type:x mandatory;
+        scroll-behavior:smooth;
+        scrollbar-width:none;
+        -webkit-overflow-scrolling:touch;
+        overscroll-behavior-inline:contain;
+        padding-bottom:.35rem;
+      }
+      #relatos .testimonials__grid::-webkit-scrollbar{display:none}
+      #relatos .testimonial-card{
+        flex:0 0 calc((100% - 2 * clamp(1rem,2vw,1.4rem)) / 3);
+        min-width:0;
+        min-height:260px;
+        scroll-snap-align:start;
+        scroll-snap-stop:always;
+      }
+      #relatos .testimonial-card__text{
+        margin:0;
+        color:#f0ead2;
+        font-size:clamp(1rem,1.35vw,1.14rem);
+        line-height:1.62;
+        white-space:pre-wrap;
+        overflow-wrap:anywhere;
+      }
+      #relatos .testimonial-card__person{
+        margin-top:auto;
+        padding-top:1.5rem;
+        display:flex;
+        flex-direction:column;
+        gap:.15rem;
+      }
+      #relatos .testimonial-card__name{
+        color:#fff;
+        font-size:.92rem;
+        font-weight:800;
+      }
+      #relatos .testimonial-card__meta{
+        color:rgba(240,234,210,.56);
+        font-size:.78rem;
+        line-height:1.4;
+      }
+      @media (max-width:960px){
+        #relatos .testimonial-card{flex-basis:calc((100% - 1rem) / 2)}
+      }
+      @media (max-width:720px){
+        #relatos .testimonials__grid{
+          margin-right:calc(var(--pad) * -1);
+          padding-right:var(--pad);
+        }
+        #relatos .testimonial-card{
+          flex:0 0 min(84vw,340px);
+          min-height:240px;
+        }
+      }
+      @media (prefers-reduced-motion:reduce){
+        #relatos .testimonials__grid{scroll-behavior:auto}
+      }
+    `;
+    document.head.appendChild(style);
+
+    testimonials.replaceChildren();
+    testimonials.setAttribute("aria-label", "Relatos dos alunos");
+
+    relatos.forEach((relato) => {
+      const card = document.createElement("article");
+      card.className = "testimonial-card";
+
+      const quote = document.createElement("span");
+      quote.className = "testimonial-card__quote";
+      quote.setAttribute("aria-hidden", "true");
+      quote.textContent = "“";
+
+      const text = document.createElement("p");
+      text.className = "testimonial-card__text";
+      text.textContent = relato.texto;
+
+      const person = document.createElement("div");
+      person.className = "testimonial-card__person";
+
+      const name = document.createElement("strong");
+      name.className = "testimonial-card__name";
+      name.textContent = relato.nome;
+
+      const meta = document.createElement("span");
+      meta.className = "testimonial-card__meta";
+      meta.textContent = relato.meta;
+
+      person.append(name, meta);
+      card.append(quote, text, person);
+      testimonials.appendChild(card);
+    });
+
+    if (!reduce && relatos.length > 1) {
+      let index = 0;
+      let timer = null;
+      let paused = false;
+
+      const cards = () => $$(".testimonial-card", testimonials);
+      const goTo = (nextIndex) => {
+        const list = cards();
+        if (!list.length) return;
+        index = (nextIndex + list.length) % list.length;
+        const target = list[index];
+        const left = Math.max(0, target.offsetLeft - testimonials.offsetLeft);
+        testimonials.scrollTo({ left, behavior: "smooth" });
+      };
+      const schedule = () => {
+        window.clearInterval(timer);
+        timer = window.setInterval(() => {
+          if (!paused && !document.hidden) goTo(index + 1);
+        }, 7000);
+      };
+      const pause = () => { paused = true; };
+      const resume = () => { paused = false; };
+
+      testimonials.addEventListener("mouseenter", pause);
+      testimonials.addEventListener("mouseleave", resume);
+      testimonials.addEventListener("focusin", pause);
+      testimonials.addEventListener("focusout", resume);
+      testimonials.addEventListener("pointerdown", pause, { passive: true });
+      testimonials.addEventListener("pointerup", resume, { passive: true });
+      testimonials.addEventListener("touchend", resume, { passive: true });
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) schedule();
+      });
+      window.addEventListener("resize", () => goTo(index));
+      schedule();
+    }
+  }
+
   /* ---------- Lightbox ---------- */
   const lb = $("[data-lightbox]");
   if (lb) {
