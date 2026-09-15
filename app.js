@@ -159,7 +159,7 @@
     style.textContent = `
       #relatos .testimonials__grid{
         display:flex;
-        gap:clamp(1rem,2vw,1.4rem);
+        gap:1.2rem;
         overflow-x:auto;
         scroll-snap-type:x mandatory;
         scroll-behavior:smooth;
@@ -170,7 +170,7 @@
       }
       #relatos .testimonials__grid::-webkit-scrollbar{display:none}
       #relatos .testimonial-card{
-        flex:0 0 calc((100% - 2 * clamp(1rem,2vw,1.4rem)) / 3);
+        flex:0 0 31.8%;
         min-width:0;
         min-height:260px;
         scroll-snap-align:start;
@@ -202,10 +202,11 @@
         line-height:1.4;
       }
       @media (max-width:960px){
-        #relatos .testimonial-card{flex-basis:calc((100% - 1rem) / 2)}
+        #relatos .testimonial-card{flex-basis:48%}
       }
       @media (max-width:720px){
         #relatos .testimonials__grid{
+          gap:1rem;
           margin-right:calc(var(--pad) * -1);
           padding-right:var(--pad);
         }
@@ -258,10 +259,13 @@
       let paused = false;
 
       const cards = () => $$(".testimonial-card", testimonials);
+      const visibleCards = () => window.innerWidth <= 720 ? 1 : window.innerWidth <= 960 ? 2 : 3;
+      const maxStart = () => Math.max(0, cards().length - visibleCards());
       const goTo = (nextIndex) => {
         const list = cards();
         if (!list.length) return;
-        index = (nextIndex + list.length) % list.length;
+        const lastStart = maxStart();
+        index = nextIndex > lastStart ? 0 : nextIndex < 0 ? lastStart : nextIndex;
         const target = list[index];
         const left = Math.max(0, target.offsetLeft - testimonials.offsetLeft);
         testimonials.scrollTo({ left, behavior: "smooth" });
@@ -285,7 +289,10 @@
       document.addEventListener("visibilitychange", () => {
         if (!document.hidden) schedule();
       });
-      window.addEventListener("resize", () => goTo(index));
+      window.addEventListener("resize", () => {
+        index = Math.min(index, maxStart());
+        goTo(index);
+      });
       schedule();
     }
   }
