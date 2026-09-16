@@ -201,6 +201,47 @@
         font-size:.78rem;
         line-height:1.4;
       }
+      #relatos .testimonials__controls{
+        display:flex;
+        align-items:center;
+        justify-content:flex-end;
+        gap:.55rem;
+        margin-top:1rem;
+      }
+      #relatos .testimonials__control{
+        min-width:42px;
+        height:42px;
+        border:1px solid rgba(240,234,210,.18);
+        border-radius:999px;
+        background:rgba(255,255,255,.045);
+        color:#f0ead2;
+        font:inherit;
+        font-size:.88rem;
+        font-weight:700;
+        padding:0 .95rem;
+        cursor:pointer;
+        transition:background .25s ease,border-color .25s ease,transform .25s ease;
+      }
+      #relatos .testimonials__control:hover,
+      #relatos .testimonials__control:focus-visible{
+        background:rgba(55,207,166,.12);
+        border-color:rgba(55,207,166,.6);
+        outline:none;
+      }
+      #relatos .testimonials__control:active{transform:scale(.97)}
+      #relatos .testimonials__control--arrow{
+        width:42px;
+        padding:0;
+        font-size:1.35rem;
+        line-height:1;
+      }
+      #relatos .testimonials__control[disabled]{opacity:.45;cursor:default}
+      #relatos .testimonials__status{
+        min-width:72px;
+        text-align:center;
+        color:rgba(240,234,210,.58);
+        font-size:.78rem;
+      }
       @media (max-width:960px){
         #relatos .testimonial-card{flex-basis:48%}
       }
@@ -214,6 +255,7 @@
           flex:0 0 min(84vw,340px);
           min-height:240px;
         }
+        #relatos .testimonials__controls{justify-content:center}
       }
       @media (prefers-reduced-motion:reduce){
         #relatos .testimonials__grid{scroll-behavior:auto}
@@ -253,48 +295,161 @@
       testimonials.appendChild(card);
     });
 
-    if (!reduce && relatos.length > 1) {
-      let index = 0;
-      let timer = null;
-      let paused = false;
+    const controls = document.createElement("div");
+    controls.className = "testimonials__controls";
+    controls.setAttribute("aria-label", "Controles dos relatos");
 
-      const cards = () => $$(".testimonial-card", testimonials);
-      const visibleCards = () => window.innerWidth <= 720 ? 1 : window.innerWidth <= 960 ? 2 : 3;
-      const maxStart = () => Math.max(0, cards().length - visibleCards());
-      const goTo = (nextIndex) => {
-        const list = cards();
-        if (!list.length) return;
-        const lastStart = maxStart();
-        index = nextIndex > lastStart ? 0 : nextIndex < 0 ? lastStart : nextIndex;
-        const target = list[index];
-        const left = Math.max(0, target.offsetLeft - testimonials.offsetLeft);
-        testimonials.scrollTo({ left, behavior: "smooth" });
-      };
-      const schedule = () => {
-        window.clearInterval(timer);
-        timer = window.setInterval(() => {
-          if (!paused && !document.hidden) goTo(index + 1);
-        }, 7000);
-      };
-      const pause = () => { paused = true; };
-      const resume = () => { paused = false; };
+    const prevBtn = document.createElement("button");
+    prevBtn.type = "button";
+    prevBtn.className = "testimonials__control testimonials__control--arrow";
+    prevBtn.setAttribute("aria-label", "Voltar relatos");
+    prevBtn.textContent = "‹";
 
-      testimonials.addEventListener("mouseenter", pause);
-      testimonials.addEventListener("mouseleave", resume);
-      testimonials.addEventListener("focusin", pause);
-      testimonials.addEventListener("focusout", resume);
-      testimonials.addEventListener("pointerdown", pause, { passive: true });
-      testimonials.addEventListener("pointerup", resume, { passive: true });
-      testimonials.addEventListener("touchend", resume, { passive: true });
-      document.addEventListener("visibilitychange", () => {
-        if (!document.hidden) schedule();
-      });
-      window.addEventListener("resize", () => {
-        index = Math.min(index, maxStart());
-        goTo(index);
-      });
-      schedule();
+    const pauseBtn = document.createElement("button");
+    pauseBtn.type = "button";
+    pauseBtn.className = "testimonials__control";
+    pauseBtn.setAttribute("aria-pressed", "false");
+    pauseBtn.textContent = reduce ? "Automático desativado" : "Pausar";
+    pauseBtn.disabled = reduce;
+
+    const nextBtn = document.createElement("button");
+    nextBtn.type = "button";
+    nextBtn.className = "testimonials__control testimonials__control--arrow";
+    nextBtn.setAttribute("aria-label", "Avançar relatos");
+    nextBtn.textContent = "›";
+
+    const status = document.createElement("span");
+    status.className = "testimonials__status";
+    status.setAttribute("aria-live", "polite");
+
+    controls.append(prevBtn, pauseBtn, nextBtn, status);
+    testimonials.insertAdjacentElement("afterend", controls);
+
+    let index = 0;
+    let timer = null;
+    let userPaused = reduce;
+    let interactionPaused = false;
+    let sectionVisible = true;
+    let scrollSyncTimer = null;
+
+    const cards = () => $$(".testimonial-card", testimonials);
+    const visibleCards = () => window.innerWidth <= 720 ? 1 : window.innerWidth <= 960 ? 2 : 3;
+    const maxStart = () => Math.max(0, cards().length - visibleCards());
+
+    const updateStatus = () => {
+      const start = index + 1;
+      const end = Math.min(relatos.length, index + visibleCards());
+      status.textContent = `${start}–${end} de ${relatos.length}`;
+    };
+
+    const syncIndexFromScroll = () => {
+      const list = cards();
+      const lastStart = maxStart();
+      if (!list.length) return;
+      let nearest = 0;
+      let nearestDistance = Infinity;
+      for (let i = 0; i <= lastStart; i++) {
+        const left = Math.max(0, list[i].offsetLeft - testimonials.offsetLeft);
+        const distance = Math.abs(testimonials.scrollLeft - left);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearest = i;
+        }
+      }
+      index = nearest;
+      updateStatus();
+    };
+
+    const goTo = (nextIndex, behavior = "smooth") => {
+      const list = cards();
+      if (!list.length) return;
+      const lastStart = maxStart();
+      index = nextIndex > lastStart ? 0 : nextIndex < 0 ? lastStart : nextIndex;
+      const target = list[index];
+      const maxScroll = Math.max(0, testimonials.scrollWidth - testimonials.clientWidth);
+      const left = Math.min(maxScroll, Math.max(0, target.offsetLeft - testimonials.offsetLeft));
+      testimonials.scrollTo({ left, behavior: reduce ? "auto" : behavior });
+      updateStatus();
+    };
+
+    const stopTimer = () => {
+      if (timer) window.clearTimeout(timer);
+      timer = null;
+    };
+
+    const scheduleAuto = () => {
+      stopTimer();
+      if (userPaused || interactionPaused || reduce) return;
+      timer = window.setTimeout(() => {
+        if (!document.hidden && sectionVisible) {
+          const nextIndex = index >= maxStart() ? 0 : index + 1;
+          goTo(nextIndex);
+        }
+        scheduleAuto();
+      }, 7000);
+    };
+
+    const setInteractionPaused = (paused) => {
+      interactionPaused = paused;
+      if (paused) stopTimer();
+      else scheduleAuto();
+    };
+
+    prevBtn.addEventListener("click", () => {
+      goTo(index - 1);
+      scheduleAuto();
+    });
+    nextBtn.addEventListener("click", () => {
+      goTo(index + 1);
+      scheduleAuto();
+    });
+    pauseBtn.addEventListener("click", () => {
+      userPaused = !userPaused;
+      pauseBtn.setAttribute("aria-pressed", String(userPaused));
+      pauseBtn.textContent = userPaused ? "Continuar" : "Pausar";
+      if (userPaused) stopTimer();
+      else scheduleAuto();
+    });
+
+    testimonials.addEventListener("mouseenter", () => setInteractionPaused(true));
+    testimonials.addEventListener("mouseleave", () => setInteractionPaused(false));
+    testimonials.addEventListener("focusin", () => setInteractionPaused(true));
+    testimonials.addEventListener("focusout", () => setInteractionPaused(false));
+    testimonials.addEventListener("pointerdown", () => setInteractionPaused(true), { passive: true });
+    testimonials.addEventListener("pointerup", () => setInteractionPaused(false), { passive: true });
+    testimonials.addEventListener("pointercancel", () => setInteractionPaused(false), { passive: true });
+    testimonials.addEventListener("touchend", () => setInteractionPaused(false), { passive: true });
+    testimonials.addEventListener("scroll", () => {
+      window.clearTimeout(scrollSyncTimer);
+      scrollSyncTimer = window.setTimeout(() => {
+        syncIndexFromScroll();
+        scheduleAuto();
+      }, 140);
+    }, { passive: true });
+
+    if ("IntersectionObserver" in window) {
+      const section = $("#relatos");
+      if (section) {
+        new IntersectionObserver(([entry]) => {
+          sectionVisible = entry.isIntersecting;
+          if (sectionVisible) scheduleAuto();
+          else stopTimer();
+        }, { threshold: 0.12 }).observe(section);
+      }
     }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stopTimer();
+      else scheduleAuto();
+    });
+    window.addEventListener("resize", () => {
+      index = Math.min(index, maxStart());
+      goTo(index, "auto");
+      scheduleAuto();
+    });
+
+    updateStatus();
+    scheduleAuto();
   }
 
   /* ---------- Lightbox ---------- */
