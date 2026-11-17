@@ -152,6 +152,11 @@
         nome: "Charles",
         meta: "Faixa branca · Já treinei a mais de dois anos",
         texto: "Excelente "
+      },
+      {
+        nome: "Pâmella",
+        meta: "Faixa branca",
+        texto: "Tenho gostado bastante em treinar com o Leo. Ele é observador e detalhista ao ensinar. Prontamente para corrigir ou avisar qual outra ação pode aplicar dentro do treino."
       }
     ];
 
